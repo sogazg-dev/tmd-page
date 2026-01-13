@@ -21,7 +21,7 @@ import Link from '../assets/images/wiki/16.png'
 import Ezlo from '../assets/images/wiki/17.png'
 import Johnny from '../assets/images/wiki/18.png'
 import Soul from '../assets/images/wiki/19.png'
-//import ShyGuy from '../assets/images/wiki/20.png'
+import ShyGuy from '../assets/images/wiki/20.png'
 import Sabio from '../assets/images/wiki/21.png'
 import Tienda from '../assets/images/wiki/22.png'
 import Petey from '../assets/images/wiki/23.png'
@@ -87,7 +87,7 @@ const Wiki = () => {
 { nombre: 'Ezlo', imagen: Ezlo, serie: 'PD', descripcion: 'Tú Madre' },
 { nombre: 'Johnny', imagen: Johnny, serie: 'DMB', descripcion: 'Es el hijo del Sabio Washatumorra. Vive en la Suit Presidencial del Hotel Denson y le encanta contar historias usando Flipnote Studio.' },
 { nombre: 'Soul', imagen: Soul, serie: 'DMB', descripcion: 'Es un ente misterioso en forma de humo que se adhiere a personas u objetos. Se desconoce su proposito real.' },
-//{ nombre: 'ShyGuy', imagen: ShyGuy, serie: 'DMB', descripcion: 'El guardian de la Torre Sagrada. Es famoso por nunca callarse y hablar como NPC. Espera algún día reencontrarse con su hijo' },
+{ nombre: 'ShyGuy', imagen: ShyGuy, serie: 'DMB', descripcion: 'El guardian de la Torre Sagrada. Es famoso por nunca callarse y hablar como NPC. Espera algún día reencontrarse con su hijo' },
 { nombre: 'Sabio Washatumorra', imagen: Sabio, serie: 'DMB', descripcion: 'Lo sabe casi todo, ¿qué pregunta le vas a hacer?' },
 { nombre: 'El Señor de la Tienda', imagen: Tienda, serie: 'DMB', descripcion: 'Era el encargado de la Tienda del Club de Comedia Bikolt, y era cocinero del restaurante El Italiano. Sus encuentros con Mario y los demás han hecho su vida más dificil de lo que pudo imaginar.' },
 { nombre: 'Petey Piranha', imagen: Petey, serie: 'DMB', descripcion: 'El Monstruo del Túnel del Miedo/Basilisco del Terror. No tiene ojos pero tiene un increible sentido del olfato y auditivo que logra saber la ubicación exacta de su presa en todo el túnel del miedo y basilisco del terror. Odia escuchar canciones de Luis Miguel.' },
