@@ -1,0 +1,929 @@
+/* ============================================================================
+   Mapa interactivo de Lugares
+   ============================================================================ */
+.mapa-lugares {
+  --oro: #e3c36b;
+  --oro-claro: #fff1b8;
+  --panel: rgba(10, 12, 20, 0.92);
+  position: relative;
+  z-index: 1;
+  width: min(1180px, 92%);
+  margin: 0 auto 36px;
+  color: #efe3bf;
+}
+
+.mapa-lugares__cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.mapa-lugares__titulo {
+  margin: 0;
+  font-family: "HyliaSerif", serif;
+  font-size: 30px;
+  font-weight: normal;
+  letter-spacing: 3px;
+  color: var(--oro);
+  text-shadow: 0 2px 0 #000, 0 0 8px rgba(0, 0, 0, 0.8);
+}
+
+.mapa-lugares__ayuda {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: rgba(239, 227, 191, 0.85);
+  text-shadow: 0 1px 2px #000;
+}
+
+/* mapa + tarjeta lado a lado */
+.mapa-lugares__cuerpo {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.mapa-lugares__marco {
+  position: relative;
+  overflow: hidden;
+  background: #0d1a20;
+  border: 2px solid var(--oro);
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px #000, inset 0 0 0 2px #120c03, 0 12px 30px rgba(0, 0, 0, 0.6);
+  isolation: isolate;
+}
+
+.mapa-lugares__lienzo {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  will-change: transform;
+}
+
+.mapa-lugares__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* ---------------- Puntos ---------------- */
+.mapa-punto,
+.mapa-portal {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 44px;   /* área para tocar, aunque la gema sea más chica */
+  height: 44px;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  transform: translate(-50%, -50%);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mapa-punto__gema {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  font-family: "HyliaSerif", serif;
+  font-size: 13px;
+  color: var(--oro-claro);
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.75), var(--gema, #555) 45%, #000 120%);
+  border: 2px solid var(--oro);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #000, 0 3px 6px rgba(0, 0, 0, 0.7);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* latido suave para que se note que se pueden tocar */
+.mapa-punto__gema::after {
+  /* centrado sobre la gema (incluye su borde de 2 px) */
+  position: absolute;
+  inset: -2px;
+  content: "";
+  border: 2px solid var(--oro-claro);
+  border-radius: 50%;
+  opacity: 0;
+  animation: mapa-latido 2.6s ease-out infinite;
+}
+
+@keyframes mapa-latido {
+  0% { opacity: 0.8; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(2.1); }
+}
+
+.mapa-punto__nombre {
+  position: absolute;
+  bottom: calc(100% - 4px);
+  left: 50%;
+  padding: 4px 9px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--oro-claro);
+  white-space: nowrap;
+  pointer-events: none;
+  background: var(--panel);
+  border: 1px solid var(--oro);
+  border-radius: 5px;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.mapa-punto:hover .mapa-punto__gema,
+.mapa-punto:focus-visible .mapa-punto__gema,
+.mapa-punto.is-activo .mapa-punto__gema {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 2px #000, 0 0 14px var(--oro-claro);
+}
+
+.mapa-punto:focus-visible,
+.mapa-portal:focus-visible {
+  outline: none;
+}
+
+.mapa-punto.is-activo,
+.mapa-punto:focus-visible {
+  z-index: 3;
+}
+
+@media (hover: hover) {
+  .mapa-punto:hover,
+  .mapa-portal:hover {
+    z-index: 4;
+  }
+
+  .mapa-punto:hover .mapa-punto__nombre,
+  .mapa-portal:hover .mapa-punto__nombre {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.mapa-punto:focus-visible .mapa-punto__nombre,
+.mapa-punto.is-activo .mapa-punto__nombre,
+.mapa-portal:focus-visible .mapa-punto__nombre {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* lugares sin descubrir */
+.mapa-punto--secreto .mapa-punto__gema {
+  background: rgba(20, 20, 26, 0.85);
+  border-style: dashed;
+}
+
+.mapa-punto--secreto .mapa-punto__gema::after {
+  animation-duration: 3.6s;
+}
+
+/* tubería: anillo verde que pulsa */
+.mapa-portal {
+  width: 52px;
+  height: 52px;
+}
+
+.mapa-portal__anillo {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #7cff8a;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #39d14f, inset 0 0 8px #39d14f;
+  animation: mapa-portal 1.8s ease-in-out infinite;
+}
+
+@keyframes mapa-portal {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+/* ---------------- Viaje entre mapas (cambio de dimensión) ---------------- */
+.mapa-lugares__marco.viaje-sale .mapa-lugares__lienzo {
+  animation: mapa-sale 0.65s cubic-bezier(0.55, 0, 0.9, 0.4) forwards;
+}
+
+.mapa-lugares__marco.viaje-entra .mapa-lugares__lienzo {
+  animation: mapa-entra 0.7s cubic-bezier(0.1, 0.6, 0.3, 1) both;
+}
+
+@keyframes mapa-sale {
+  0% { filter: none; transform: scale(1) rotate(0); }
+  100% { filter: blur(6px) brightness(1.6) hue-rotate(90deg); transform: scale(4.5) rotate(25deg); }
+}
+
+@keyframes mapa-entra {
+  0% { filter: blur(6px) brightness(1.8) hue-rotate(-90deg); transform: scale(0.35) rotate(-30deg); }
+  100% { filter: none; transform: scale(1) rotate(0); }
+}
+
+/* remolino de luz centrado en la tubería */
+.mapa-lugares__remolino {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at var(--origen, 50% 50%), rgba(255, 255, 255, 0.95) 0, rgba(160, 255, 170, 0.55) 9%, rgba(20, 60, 30, 0.85) 22%, #000 46%);
+  animation: mapa-remolino 1.35s ease-in-out forwards;
+}
+
+@keyframes mapa-remolino {
+  0% { opacity: 0; }
+  42% { opacity: 1; }
+  52% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ---------------- Tarjeta del lugar ---------------- */
+.mapa-tarjeta {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--panel);
+  border: 2px solid var(--oro);
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px #000, 0 10px 26px rgba(0, 0, 0, 0.7);
+  animation: mapa-tarjeta 0.22s ease-out;
+}
+
+@keyframes mapa-tarjeta {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* en computadora la tarjeta mide lo mismo que el mapa */
+@media screen and (min-width: 900px) {
+  .mapa-tarjeta {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 320px;
+  }
+}
+
+.mapa-tarjeta--vacia {
+  animation: none;
+  border-style: dashed;
+  border-color: rgba(227, 195, 107, 0.55);
+}
+
+.mapa-tarjeta__nota {
+  margin-top: 14px !important;
+  font-style: italic;
+  color: #9fe7a8 !important;
+}
+
+.mapa-tarjeta__candado--brujula {
+  background:
+    conic-gradient(from 0deg, transparent 0 40deg, rgba(227, 195, 107, 0.9) 40deg 50deg, transparent 50deg 130deg, rgba(227, 195, 107, 0.9) 130deg 140deg, transparent 140deg 220deg, rgba(227, 195, 107, 0.9) 220deg 230deg, transparent 230deg 310deg, rgba(227, 195, 107, 0.9) 310deg 320deg, transparent 320deg);
+}
+
+.mapa-tarjeta__cerrar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 22px;
+  line-height: 1;
+  color: #fff;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid var(--oro);
+  border-radius: 50%;
+}
+
+.mapa-tarjeta__img {
+  flex-shrink: 0;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-bottom: 2px solid var(--oro);
+}
+
+.mapa-tarjeta__texto {
+  flex: 1;
+  min-height: 0;
+  padding: 14px 16px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.mapa-tarjeta__texto h3 {
+  margin: 0 36px 8px 0;
+  font-family: "HyliaSerif", serif;
+  font-size: 22px;
+  font-weight: normal;
+  letter-spacing: 1.5px;
+  color: var(--oro);
+}
+
+.mapa-tarjeta__texto p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #efe3bf;
+}
+
+.mapa-tarjeta__texto--secreto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.mapa-tarjeta__texto--secreto h3 {
+  margin-right: 0;
+}
+
+.mapa-tarjeta__candado {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 12px;
+  font-family: "HyliaSerif", serif;
+  font-size: 34px;
+  color: var(--oro);
+  border: 2px dashed var(--oro);
+  border-radius: 50%;
+}
+
+/* ---------------- Lista rápida ---------------- */
+.mapa-lugares__lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.mapa-chip {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 38px;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #efe3bf;
+  cursor: pointer;
+  background: rgba(10, 12, 20, 0.82);
+  border: 1px solid rgba(227, 195, 107, 0.55);
+  border-radius: 999px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.mapa-chip:hover,
+.mapa-chip:focus-visible,
+.mapa-chip.is-activo {
+  background: rgba(40, 34, 18, 0.95);
+  border-color: var(--oro-claro);
+  outline: none;
+}
+
+.mapa-chip__gema {
+  width: 12px;
+  height: 12px;
+  background: var(--gema, #555);
+  border: 2px solid var(--oro);
+  border-radius: 50%;
+}
+
+.mapa-chip--viaje {
+  color: #b9ffc1;
+  border-color: rgba(124, 255, 138, 0.6);
+}
+
+.mapa-chip__tubo {
+  width: 12px;
+  height: 14px;
+  background: linear-gradient(90deg, #2f8a3c, #7fd486 40%, #2f8a3c);
+  border: 1px solid #000;
+  border-radius: 2px 2px 1px 1px;
+  box-shadow: 0 -3px 0 -1px #3fa04c;
+}
+
+/* ---------------- Celular y tableta: la tarjeta va debajo del mapa ---------------- */
+@media screen and (max-width: 899px) {
+  .mapa-lugares {
+    width: 100%;
+    padding: 0 12px;
+    margin-bottom: 24px;
+    box-sizing: border-box;
+  }
+
+  .mapa-lugares__titulo {
+    font-size: 24px;
+  }
+
+  .mapa-lugares__ayuda {
+    font-size: 12px;
+  }
+
+  .mapa-lugares__cuerpo {
+    display: block;
+  }
+
+  .mapa-tarjeta {
+    flex-direction: row;
+    width: 100%;
+    margin-top: 12px;
+    animation-name: mapa-tarjeta-abajo;
+  }
+
+  .mapa-tarjeta--vacia {
+    display: none;
+  }
+
+  @keyframes mapa-tarjeta-abajo {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .mapa-tarjeta__img {
+    width: 40%;
+    aspect-ratio: auto;
+    min-height: 100%;
+    border-right: 2px solid var(--oro);
+    border-bottom: 0;
+  }
+
+  .mapa-tarjeta__texto {
+    overflow: visible;
+  }
+
+  .mapa-tarjeta__texto h3 {
+    font-size: 19px;
+  }
+
+  .mapa-tarjeta__texto p {
+    font-size: 14px;
+  }
+
+  /* en pantallas chicas los puntos son un poco más chicos, pero el área para tocar no */
+  .mapa-punto {
+    width: 36px;
+    height: 36px;
+  }
+
+  .mapa-punto__gema {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mapa-punto__gema {
+    font-size: 11px;
+  }
+
+  .mapa-punto__nombre {
+    font-size: 11px;
+  }
+
+  .mapa-portal {
+    width: 40px;
+    height: 40px;
+  }
+
+  .mapa-portal__anillo {
+    width: 30px;
+    height: 30px;
+  }
+
+  .mapa-chip {
+    min-height: 36px;
+    padding: 5px 12px;
+    font-size: 13px;
+  }
+}
+
+/* celulares: imagen arriba y texto abajo en la tarjeta */
+@media screen and (max-width: 559px) {
+  .mapa-tarjeta {
+    flex-direction: column;
+  }
+
+  .mapa-tarjeta__img {
+    width: 100%;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+    border-right: 0;
+    border-bottom: 2px solid var(--oro);
+  }
+
+  .mapa-lugares__lista {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding-bottom: 6px;
+    margin-right: -12px;
+    margin-left: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mapa-lugares__lista::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mapa-chip {
+    flex-shrink: 0;
+  }
+}
+
+/* ---------- Ruta del lugar elegido (p. ej. Túnel del Miedo) ---------- */
+.mapa-ruta {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.mapa-ruta path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: mapa-ruta-dibuja var(--duracion, 0.8s) ease-out var(--retraso, 0s) forwards;
+}
+
+.mapa-ruta__borde {
+  stroke: rgba(30, 18, 0, 0.85);
+  stroke-width: 1.5;
+}
+
+.mapa-ruta__linea {
+  stroke: #ffd23f;
+  stroke-width: 0.75;
+  filter: drop-shadow(0 0 0.6px rgba(255, 210, 63, 0.9));
+}
+
+.mapa-ruta__fin {
+  fill: #ffd23f;
+  stroke: rgba(30, 18, 0, 0.85);
+  stroke-width: 0.4;
+  opacity: 0;
+  animation: mapa-ruta-aparece 0.25s ease-out calc(var(--retraso, 0s) + var(--duracion, 0.8s) - 0.1s) forwards;
+}
+
+@keyframes mapa-ruta-dibuja {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes mapa-ruta-aparece {
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mapa-punto__gema::after,
+  .mapa-portal__anillo,
+  .mapa-tarjeta {
+    animation: none;
+  }
+
+  .mapa-ruta path,
+  .mapa-ruta__fin {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* ============================================================================
+   Botones para abrir el mapa en pantalla completa
+   ============================================================================ */
+.mapa-lugares__completo {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 12px;
+  margin-left: auto;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--oro-claro);
+  cursor: pointer;
+  background: rgba(10, 12, 20, 0.85);
+  border: 1px solid var(--oro);
+  border-radius: 999px;
+}
+
+.mapa-lugares__completo:hover,
+.mapa-lugares__completo:focus-visible {
+  background: rgba(40, 34, 18, 0.95);
+  outline: none;
+}
+
+.mapa-lugares__ayuda {
+  flex: 1;
+}
+
+.mapa-lugares__lupa {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font-size: 20px;
+  color: var(--oro-claro);
+  cursor: pointer;
+  background: rgba(10, 12, 20, 0.82);
+  border: 1px solid var(--oro);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================================================================
+   Mapa en pantalla completa (con zoom)
+   ============================================================================ */
+.mapa-completo {
+  --oro: #e3c36b;
+  --oro-claro: #fff1b8;
+  --panel: rgba(10, 12, 20, 0.94);
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  color: #efe3bf;
+  background: #05070b;
+  animation: mapa-completo-abre 0.2s ease-out;
+}
+
+@keyframes mapa-completo-abre {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.mapa-completo__barra {
+  display: flex;
+  flex-shrink: 0;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 10px;
+  background: var(--panel);
+  border-bottom: 1px solid rgba(227, 195, 107, 0.5);
+}
+
+.mapa-completo__titulo {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-family: "HyliaSerif", serif;
+  font-size: 22px;
+  font-weight: normal;
+  letter-spacing: 2px;
+  color: var(--oro);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mapa-completo__acciones {
+  display: flex;
+  flex-shrink: 0;
+  gap: 6px;
+  align-items: center;
+}
+
+.mapa-completo__btn {
+  display: grid;
+  place-items: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--oro-claro);
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(227, 195, 107, 0.6);
+  border-radius: 8px;
+}
+
+.mapa-completo__btn:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+.mapa-completo__btn--texto {
+  font-size: 13px;
+}
+
+.mapa-completo__btn--cerrar {
+  margin-left: 6px;
+  border-color: var(--oro);
+}
+
+.mapa-completo__nivel {
+  min-width: 46px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.mapa-completo__vista {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  background:
+    radial-gradient(circle at 50% 40%, #12202a, #05070b 70%);
+}
+
+.mapa-completo__vista:active {
+  cursor: grabbing;
+}
+
+.mapa-completo__capa {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.mapa-completo__capa.is-animando {
+  transition: transform 0.32s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.mapa-completo__img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.mapa-completo__img--hd {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mapa-completo__img--hd.is-lista {
+  opacity: 1;
+}
+
+/* los puntos no crecen con el zoom: siempre del mismo tamaño en pantalla */
+.mapa-completo .mapa-punto,
+.mapa-completo .mapa-portal {
+  transform: translate(-50%, -50%) scale(calc(1 / var(--s, 1)));
+}
+
+.mapa-completo__destello {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.95) 0, rgba(160, 255, 170, 0.55) 10%, rgba(20, 60, 30, 0.85) 24%, #000 50%);
+  animation: mapa-remolino 1.35s ease-in-out forwards;
+}
+
+.mapa-completo__pista {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  margin: 0;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(239, 227, 191, 0.85);
+  white-space: nowrap;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 999px;
+  transform: translateX(-50%);
+  animation: mapa-pista 5s ease forwards;
+}
+
+@keyframes mapa-pista {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.mapa-completo .solo-tactil {
+  display: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .mapa-completo .solo-raton { display: none; }
+  .mapa-completo .solo-tactil { display: inline; }
+}
+
+/* tarjeta: a la derecha en computadora */
+.mapa-tarjeta--completo {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 74px);
+  right: 16px;
+  z-index: 6;
+  bottom: auto;
+  width: 340px;
+  max-height: calc(100% - 160px);
+}
+
+.mapa-completo__lista {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+  padding: 10px 16px calc(env(safe-area-inset-bottom, 0px) + 10px);
+  overflow-x: auto;
+  background: var(--panel);
+  border-top: 1px solid rgba(227, 195, 107, 0.5);
+  scrollbar-width: none;
+}
+
+.mapa-completo__lista::-webkit-scrollbar {
+  display: none;
+}
+
+.mapa-completo__lista .mapa-chip {
+  flex-shrink: 0;
+}
+
+/* celular y tableta: tarjeta como hoja abajo, sobre la lista */
+@media screen and (max-width: 899px) {
+  .mapa-completo__barra {
+    padding-right: 10px;
+    padding-left: 12px;
+  }
+
+  .mapa-completo__titulo {
+    font-size: 17px;
+    letter-spacing: 1px;
+  }
+
+  .mapa-completo__btn {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 8px;
+  }
+
+  .mapa-completo__btn--texto,
+  .mapa-completo__nivel {
+    display: none;
+  }
+
+  .mapa-tarjeta--completo {
+    top: auto;
+    right: 10px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 66px);
+    left: 10px;
+    width: auto;
+    max-height: 46%;
+    flex-direction: column;
+    margin: 0;
+    animation-name: mapa-tarjeta-abajo;
+  }
+
+  .mapa-tarjeta--completo .mapa-tarjeta__img {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: 38%;
+    aspect-ratio: auto;
+    flex-shrink: 1;
+    border-right: 0;
+    border-bottom: 2px solid var(--oro);
+  }
+
+  .mapa-tarjeta--completo .mapa-tarjeta__texto {
+    overflow-y: auto;
+  }
+}

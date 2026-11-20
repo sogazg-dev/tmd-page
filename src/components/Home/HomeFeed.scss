@@ -1,0 +1,447 @@
+/* Portada de Inicio: último episodio, próximo episodio y última publicación.
+   .home-feed--mobile → celular/tableta (1 columna)
+   .home-feed--desktop → computadora, debajo de los botones (2 columnas) */
+
+.home-feed {
+  color: #fff;
+  font-family: 'Open Sans', sans-serif;
+  box-sizing: border-box;
+}
+
+.home-feed__block {
+  padding: 8px 16px 20px;
+}
+
+.home-feed__kicker {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: left;
+  color: #e50914;
+}
+
+.home-feed__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.home-feed__head a {
+  font-size: 13px;
+  font-weight: bold;
+  color: #aaa;
+  text-decoration: none;
+}
+
+.home-feed__head a:hover {
+  color: #fff;
+}
+
+/* ---------- Último episodio ---------- */
+.home-feed__thumb {
+  position: relative;
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.home-feed__thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #1a1a1a;
+  transition: transform 0.3s ease;
+}
+
+.home-feed__thumb:hover img {
+  transform: scale(1.03);
+}
+
+.home-feed__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  padding-left: 4px;
+  box-sizing: border-box;
+  font-size: 22px;
+  color: #fff;
+  background: rgba(229, 9, 20, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+.home-feed__info {
+  margin-top: 12px;
+}
+
+.home-feed__logo {
+  display: block;
+  height: 36px;
+  max-width: 50%;
+  object-fit: contain;
+  object-position: left center;
+  margin-bottom: 6px;
+}
+
+.home-feed__logo--small {
+  height: 26px;
+}
+
+.home-feed__title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  line-height: 1.25;
+  text-align: left;
+  color: #fff;
+}
+
+.home-feed__desc {
+  max-width: none;
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #ccc;
+  text-align: left;
+}
+
+.home-feed__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.home-feed__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  background: #e50914;
+  border: 1px solid #e50914;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.home-feed__btn:hover {
+  background: #94080d;
+  border-color: #94080d;
+}
+
+.home-feed__btn--ghost {
+  background: transparent;
+  border-color: #555;
+  color: #ddd;
+}
+
+.home-feed__btn--ghost:hover {
+  background: #222;
+  border-color: #777;
+}
+
+/* ---------- Próximo episodio ---------- */
+.home-feed__upcoming {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+}
+
+.home-feed__upcoming-thumb {
+  flex: 0 0 44%;
+  max-width: 260px;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.10), transparent 55%),
+    linear-gradient(135deg, #2b2b2b 0%, #0d0d0d 100%);
+}
+
+.home-feed__upcoming-thumb span {
+  font-size: clamp(22px, 7vw, 40px);
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #e6e6e6;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.home-feed__upcoming-text {
+  min-width: 0;
+}
+
+.home-feed__upcoming-text h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  text-align: left;
+  color: #fff;
+}
+
+.home-feed__badge {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(229, 9, 20, 0.15);
+  border: 1px solid #e50914;
+  border-radius: 12px;
+}
+
+/* ---------- Última publicación ---------- */
+.home-feed .yt-post {
+  margin-bottom: 0;
+  padding: 14px;
+}
+
+.home-feed__status {
+  max-width: none;
+  margin: 8px 0;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.home-feed__status a {
+  color: #ff4d4d;
+}
+
+/* ======================= CELULAR / TABLETA ======================= */
+@media screen and (max-width: 1205px) {
+  /* En celular la portada reemplaza los botones de computadora */
+  .home-page {
+    display: none;
+  }
+}
+
+.home-feed--mobile .home-feed__hero {
+  position: relative;
+  padding-top: 8px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.home-feed__fire {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35;
+  z-index: -1;
+  filter: blur(2px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
+  mask-image: linear-gradient(to bottom, #000 40%, transparent);
+}
+
+@media screen and (min-width: 768px) and (max-width: 1205px) {
+  .home-feed--mobile {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .home-feed--mobile .home-feed__block {
+    padding: 12px 24px 24px;
+  }
+
+  .home-feed--mobile .home-feed__title {
+    font-size: 24px;
+  }
+}
+
+/* ======================= COMPUTADORA: 2 columnas ======================= */
+.home-feed--desktop {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+  width: 90%;
+  max-width: 1400px;
+  margin: 40px auto 60px;
+}
+
+.home-feed--desktop .home-feed__block {
+  padding: 0 0 32px;
+}
+
+.home-feed--desktop .home-feed__kicker {
+  font-size: 15px;
+}
+
+.home-feed--desktop .home-feed__title {
+  font-size: 26px;
+}
+
+.home-feed--desktop .home-feed__desc {
+  font-size: 16px;
+}
+
+.home-feed--desktop .home-feed__logo {
+  height: 48px;
+}
+
+.home-feed--desktop .home-feed__logo--small {
+  height: 30px;
+}
+
+.home-feed--desktop .home-feed__play {
+  width: 76px;
+  height: 76px;
+  font-size: 30px;
+}
+
+.home-feed--desktop .home-feed__upcoming-thumb span {
+  font-size: 38px;
+}
+
+.home-feed--desktop .home-feed__upcoming-text h3 {
+  font-size: 22px;
+}
+
+/* Fila de abajo: el próximo episodio y el anuncio del juego miden lo mismo */
+.home-feed--desktop {
+  row-gap: 0;
+}
+
+.home-feed--desktop .home-feed__abajo {
+  display: flex;
+  align-self: stretch;
+}
+
+.home-feed--desktop .home-feed__abajo > .home-feed__block {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.home-feed--desktop .home-feed__abajo .home-feed__upcoming,
+.home-feed--desktop .home-feed__abajo .home-feed__juego {
+  flex: 1;
+}
+
+.home-feed--desktop .home-feed__juego {
+  gap: 14px;
+  padding: 12px 12px 12px 16px;
+  border-left-width: 1px;
+  /* la franja roja va por dentro para que mida igual que el próximo episodio */
+  box-shadow: inset 4px 0 0 #e50914;
+}
+
+.home-feed--desktop .home-feed__juego-img {
+  flex: 0 0 44%;
+  max-width: 260px;
+}
+
+.home-feed--desktop .home-feed__juego-info strong {
+  font-size: 22px;
+}
+
+.home-feed--desktop .home-feed__juego-info span {
+  font-size: 14px;
+}
+
+.home-feed--desktop .home-feed__juego-sello {
+  font-size: 12px;
+}
+
+/* --- Anuncio del próximo juego (FlipSlope) --- */
+.home-feed__juego {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px;
+  color: #fff;
+  text-decoration: none;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-left: 4px solid #e50914;
+  border-radius: 12px;
+  transition: border-color 0.2s ease;
+}
+
+.home-feed__juego:hover {
+  border-color: #e50914;
+}
+
+.home-feed__juego-img {
+  position: relative;
+  flex: 0 0 132px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #fbfbf6;
+  border-radius: 8px;
+}
+
+.home-feed__juego-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.home-feed__juego-sello {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #151515;
+  background: #fbfbf6;
+  border: 2px solid #151515;
+  border-radius: 6px;
+  box-shadow: 2px 2px 0 #e50914;
+}
+
+.home-feed__juego-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  text-align: left;
+}
+
+.home-feed__juego-info strong {
+  font-size: 16px;
+}
+
+.home-feed__juego-info span {
+  font-size: 13px;
+  line-height: 1.35;
+  color: #bbb;
+}
+
+.home-feed__juego-info .home-feed__juego-link {
+  margin-top: 2px;
+  font-weight: bold;
+  color: #e50914;
+}
+
+@media screen and (min-width: 600px) {
+  .home-feed__juego-img {
+    flex-basis: 170px;
+  }
+}

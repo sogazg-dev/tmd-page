@@ -1,0 +1,359 @@
+/* Sección "Server de Minecraft" (página de Juegos): estilo del juego,
+   con tierra y pasto pixelados y letras pixeladas. */
+$mc-font-titulo: 'Press Start 2P', 'Courier New', monospace;
+$mc-font: 'VT323', 'Courier New', monospace;
+
+.mc {
+  position: relative;
+  margin-top: 40px;
+  padding: 0 0 56px;
+  color: #fff;
+  font-family: $mc-font;
+  font-size: 22px;
+  line-height: 1.25;
+  background-color: #6b4a33;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.72)),
+    url('../../assets/images/juegos/minecraft/tierra.png');
+  background-size: auto, 64px 64px;
+  image-rendering: pixelated;
+}
+
+/* Orilla de pasto arriba */
+.mc__pasto {
+  height: 32px;
+  background: url('../../assets/images/juegos/minecraft/pasto.png') repeat-x;
+  background-size: 64px 32px;
+  image-rendering: pixelated;
+}
+
+.mc__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 40px 0;
+  box-sizing: border-box;
+  image-rendering: auto;
+}
+
+.mc p {
+  max-width: none;
+}
+
+/* ------- Título ------- */
+.mc__head {
+  position: relative;
+  text-align: center;
+}
+
+.mc__titulo {
+  margin: 0;
+  font-family: $mc-font-titulo;
+  font-size: 34px;
+  font-weight: normal;
+  line-height: 1.3;
+  color: #fff;
+  text-shadow: 4px 4px 0 #3f3f3f;
+}
+
+/* Texto amarillo inclinado (como en el menú del juego) */
+.mc__splash {
+  position: absolute;
+  top: -2px;
+  right: 3%;
+  width: 220px;
+  font-family: $mc-font-titulo;
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+  color: #ffff55;
+  text-shadow: 2px 2px 0 #3f3f15;
+  transform: rotate(-16deg);
+  animation: mc-splash 0.9s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes mc-splash {
+  from { transform: rotate(-16deg) scale(1); }
+  to { transform: rotate(-16deg) scale(1.08); }
+}
+
+.mc__intro {
+  margin: 22px auto 0;
+  max-width: 760px !important;
+  font-size: 24px;
+  color: #e0e0e0;
+  text-align: center;
+  text-shadow: 2px 2px 0 #222;
+}
+
+.mc__subtitulo {
+  margin: 0 0 14px;
+  font-family: $mc-font-titulo;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 1.4;
+  color: #ffff55;
+  text-align: center;
+  text-shadow: 2px 2px 0 #3f3f15;
+}
+
+/* ------- Paneles con borde biselado (como las ventanas del juego) ------- */
+.mc-panel {
+  background: #c6c6c6;
+  border: 4px solid #000;
+  box-shadow:
+    inset 4px 4px 0 #fff,
+    inset -4px -4px 0 #555;
+}
+
+.mc__mundo {
+  margin: 30px auto 0;
+  max-width: 760px;
+  padding: 10px;
+  box-sizing: border-box;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 3px solid #373737;
+  }
+
+  figcaption {
+    margin-top: 8px;
+    color: #3f3f3f;
+    font-size: 22px;
+    text-align: center;
+  }
+}
+
+/* ------- Características: casillas de inventario ------- */
+.mc__features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mc-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  color: #ddd;
+  background: rgba(55, 55, 55, 0.92);
+  border: 3px solid #1e1e1e;
+  box-shadow:
+    inset 3px 3px 0 #8b8b8b,
+    inset -3px -3px 0 #fff2;
+
+  strong {
+    font-family: $mc-font-titulo;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.5;
+    color: #55ff55;
+  }
+
+  span:last-child {
+    font-size: 20px;
+  }
+}
+
+.mc-slot__icono {
+  font-size: 32px;
+  line-height: 1;
+}
+
+/* ------- Creadores ------- */
+.mc__creadores {
+  margin-top: 40px;
+}
+
+.mc__creadores-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 6px;
+    box-sizing: border-box;
+  }
+}
+
+/* ------- Misterio ------- */
+.mc__misterio {
+  margin: 34px auto 0;
+  font-size: 26px;
+  color: #aaa;
+  font-style: italic;
+  text-align: center;
+  text-shadow: 2px 2px 0 #111;
+}
+
+/* ------- Cómo entrar ------- */
+.mc__unirse {
+  margin: 34px auto 0;
+  max-width: 760px;
+  padding: 24px 24px 20px;
+  box-sizing: border-box;
+  color: #3f3f3f;
+  text-align: center;
+
+  .mc__subtitulo {
+    color: #3f3f3f;
+    text-shadow: none;
+  }
+}
+
+.mc__pasos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+
+  li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 20px;
+  }
+
+  strong {
+    display: block;
+    color: #1f1f1f;
+    font-size: 22px;
+  }
+}
+
+.mc__num {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-family: $mc-font-titulo;
+  font-size: 14px;
+  color: #fff;
+  background: #5b8731;
+  border: 3px solid #000;
+  box-shadow: inset 2px 2px 0 #7fbf45, inset -2px -2px 0 #3b5a1e;
+}
+
+/* Botón como los del menú del juego */
+.mc-boton {
+  display: inline-block;
+  min-width: 300px;
+  padding: 12px 20px;
+  font-family: $mc-font-titulo;
+  font-size: 14px;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: 2px 2px 0 #3f3f3f;
+  background: #6f6f6f;
+  border: 3px solid #000;
+  box-shadow: inset 3px 3px 0 #aaa, inset -3px -3px 0 #4a4a4a;
+  box-sizing: border-box;
+
+  &:hover,
+  &:focus-visible {
+    color: #ffffa0;
+    background: #7b86c4;
+    box-shadow: inset 3px 3px 0 #a9b3ec, inset -3px -3px 0 #4b5592;
+    outline: none;
+  }
+}
+
+.mc__nota {
+  margin: 16px 0 0;
+  font-size: 19px;
+  color: #555;
+}
+
+/* ------- Celular y tableta ------- */
+@media screen and (max-width: 1205px) {
+  // El splash va debajo del título para no tapar el texto
+  .mc__splash {
+    position: static;
+    display: block;
+    width: auto;
+    max-width: 260px;
+    margin: 12px auto 4px;
+    font-size: 11px;
+    animation-name: mc-splash-movil;
+  }
+
+  @keyframes mc-splash-movil {
+    from { transform: rotate(-5deg) scale(1); }
+    to { transform: rotate(-5deg) scale(1.08); }
+  }
+
+  .mc {
+    margin-top: 24px;
+    font-size: 20px;
+  }
+
+  .mc__inner {
+    padding: 22px 16px 0;
+  }
+
+  .mc__titulo {
+    font-size: 20px;
+  }
+
+  .mc__splash {
+    position: static;
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 11px;
+  }
+
+  .mc__intro {
+    font-size: 21px;
+  }
+
+  .mc__features {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .mc-slot {
+    padding: 10px;
+
+    strong { font-size: 10px; }
+    span:last-child { font-size: 18px; }
+  }
+
+  .mc__creadores-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .mc__pasos {
+    grid-template-columns: 1fr;
+  }
+
+  .mc-boton {
+    min-width: 0;
+    width: 100%;
+    font-size: 12px;
+  }
+
+  .mc__subtitulo {
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .mc__features {
+    grid-template-columns: 1fr;
+  }
+}

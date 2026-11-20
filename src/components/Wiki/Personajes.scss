@@ -462,3 +462,469 @@
   
 
   }
+
+/* =====================================================================
+   Elementos nuevos: en computadora no cambian el diseño original
+   ===================================================================== */
+.wiki-hero-fire,
+.wiki-info-toggle,
+.serie-chip-all,
+.search-clear {
+  display: none;
+}
+
+/* El contenedor del buscador y filtros no altera el acomodo en computadora */
+.wiki-dock {
+  display: contents;
+}
+
+.wiki-empty {
+  color: #aaa;
+  text-align: center;
+  margin: 10px 0 30px;
+}
+
+/* =====================================================================
+   COMPUTADORA (≥1206px): encabezado compacto de tamaño fijo, como en celular.
+   El fuego va dentro del encabezado (ya no detrás de toda la página) y el logo
+   mide siempre lo mismo, así no tapa el menú ni se mueve con el ancho.
+   ===================================================================== */
+@media screen and (min-width: 1206px) {
+  .wiki-hero {
+    position: relative;
+    width: 100%;
+    margin: 0 0 22px;
+    padding: 16px 40px 14px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .wiki-hero-fire {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.45;
+    z-index: -1;
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  }
+
+  .wiki-hero .catalog-back {
+    top: 16px;
+    left: 40px;
+  }
+
+  .wiki-hero .image-container {
+    width: auto;
+    margin: 0;
+  }
+
+  .wiki-hero .image-container img {
+    display: block;
+    width: 270px;
+    /* la imagen trae ~27% de espacio vacío arriba; se recorta */
+    margin: -73px auto 0;
+  }
+
+  .wiki-hero .text-part h1 {
+    margin: 10px 0 2px;
+    padding: 0;
+    font-size: 24px;
+  }
+
+  .wiki-hero .text-part h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: normal;
+    color: #ccc;
+  }
+}
+
+/* =====================================================================
+   CELULAR Y TABLETA (≤1205px): diseño tipo app
+   ===================================================================== */
+@media screen and (max-width: 1205px) {
+  .personajes-page-wrapper {
+    /* espacio para el buscador/filtros fijos abajo */
+    padding-bottom: 136px;
+  }
+
+  /* ---------- Encabezado: logo con fuego + "Más información" ---------- */
+  .wiki-hero {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 12px 16px 14px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .wiki-hero-fire {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+    z-index: -1;
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  }
+
+  .wiki-hero .image-container {
+    width: auto;
+    margin: 0;
+  }
+
+  .wiki-hero .image-container img {
+    display: block;
+    width: min(56vw, 260px);
+    /* la imagen trae ~30% de espacio vacío arriba; se recorta */
+    margin: calc(min(56vw, 260px) * -0.27) auto 0;
+  }
+
+  .wiki-info-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    padding: 7px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 20px;
+    cursor: pointer;
+  }
+
+  .wiki-hero .text-part {
+    display: none;
+    width: 100%;
+    max-width: 640px;
+    margin-top: 10px;
+    padding: 12px 14px;
+    box-sizing: border-box;
+    background: rgba(20, 20, 20, 0.85);
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+  }
+
+  .wiki-hero .text-part.is-open {
+    display: block;
+    animation: wikiInfoIn 0.2s ease-out;
+  }
+
+  .wiki-hero .text-part h1 {
+    font-size: 17px;
+    padding: 0;
+    margin: 0 0 8px;
+  }
+
+  .wiki-hero .text-part h2 {
+    font-size: 14px;
+    font-weight: normal;
+    margin: 4px 0 0;
+    color: #ddd;
+  }
+
+  @keyframes wikiInfoIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ---------- Buscador y filtros fijos abajo (encima del menú) ---------- */
+  .wiki-dock {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 900;
+    /* llega hasta abajo; el menú flotante queda encima de su parte inferior */
+    padding: 8px 12px calc(88px + env(safe-area-inset-bottom));
+    background: rgba(18, 18, 18, 0.96);
+    border-top: 1px solid #2c2c2c;
+    box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  .wiki-dock .search-wrapper {
+    position: relative;
+    margin: 0;
+  }
+
+  .wiki-dock .search-bar {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+    height: 40px;
+    padding: 0 40px 0 38px;
+    font-size: 16px; /* 16px evita que iPhone haga zoom al escribir */
+    text-align: left;
+    color: #fff;
+    background: #2a2a2a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 12px center / 18px;
+    border: 1px solid #3a3a3a;
+    border-radius: 20px;
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
+
+    &::placeholder { color: #8a8a8a; }
+    &::-webkit-search-cancel-button { display: none; }
+
+    &:focus {
+      border-color: #e50914;
+      box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.25);
+    }
+  }
+
+  .search-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-size: 22px;
+    line-height: 1;
+    color: #ccc;
+    background: #444;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .wiki-dock .series-filter {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start; /* si es center, el primer filtro queda fuera de la pantalla */
+    gap: 8px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 0 2px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar { display: none; }
+
+    .serie-logo {
+      flex: 0 0 auto;
+      width: 64px;
+      height: 52px;
+      aspect-ratio: auto;
+      padding: 4px;
+      box-sizing: border-box;
+      border-radius: 10px;
+      border: 2px solid #333;
+      background: #222;
+
+      &:hover,
+      &:hover img {
+        transform: none;
+      }
+
+      &.active {
+        border-color: #e50914;
+        background: rgba(229, 9, 20, 0.15);
+        box-shadow: none;
+      }
+    }
+
+    .clear-filter {
+      display: none;
+    }
+  }
+
+  .serie-chip-all {
+    display: block;
+    flex: 0 0 auto;
+    height: 52px;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ccc;
+    background: #222;
+    border: 2px solid #333;
+    border-radius: 10px;
+    cursor: pointer;
+
+    &.active {
+      color: #fff;
+      border-color: #e50914;
+      background: rgba(229, 9, 20, 0.15);
+    }
+  }
+
+  /* ---------- Tarjetas compactas ---------- */
+  .wiki-empty {
+    margin: 24px 16px;
+  }
+
+  .personajes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    gap: 10px;
+    width: 100%;
+    max-width: none;
+    margin: 12px 0 16px;
+    padding: 0 12px;
+    box-sizing: border-box;
+  }
+
+  .personajes-grid .personaje-card {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 590 / 1004;
+    animation-duration: 0.3s;
+    animation-delay: 0s !important;
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+
+      &:hover {
+        transform: none;
+      }
+    }
+  }
+
+  .wiki-fuentes {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    padding: 0 16px;
+
+    a { color: #ccc; }
+  }
+
+  /* ---------- Ventana de detalle del personaje ---------- */
+  .wiki-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    animation: wikiFade 0.2s ease-out;
+  }
+
+  .wiki-sheet {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    width: 100%;
+    max-width: 640px;
+    max-height: 80vh;
+    padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+    background: #1a1a1a;
+    border-top: 1px solid #333;
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+    animation: wikiSheetIn 0.25s ease-out;
+  }
+
+  .wiki-sheet-img {
+    flex: 0 0 auto;
+    width: 38%;
+    max-width: 200px;
+    align-self: flex-start;
+    aspect-ratio: 590 / 1004;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .wiki-sheet-body {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    padding-right: 24px;
+    color: #fff;
+    text-align: left;
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    p {
+      margin: 0;
+      max-width: none;
+      font-size: 15px;
+      line-height: 1.45;
+      color: #ddd;
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .wiki-sheet-serie {
+    display: block;
+    height: 38px;
+    max-width: 120px;
+    object-fit: contain;
+    margin-bottom: 8px;
+  }
+
+  .wiki-sheet-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 24px;
+    line-height: 1;
+    color: #fff;
+    background: #333;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  @keyframes wikiFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes wikiSheetIn {
+    from { transform: translateY(40px); opacity: 0.6; }
+    to { transform: none; opacity: 1; }
+  }
+}
+
+/* Tabletas: tarjetas un poco más grandes */
+@media screen and (min-width: 600px) and (max-width: 1205px) {
+  .personajes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 14px;
+    padding: 0 20px;
+  }
+}

@@ -1,0 +1,342 @@
+/* Página de Contacto */
+.contacto {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 40px 60px;
+  box-sizing: border-box;
+  color: #fff;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.contacto__header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.contacto__header h1 {
+  margin: 0 0 8px;
+  font-size: 40px;
+  color: #fff;
+}
+
+.contacto__header p {
+  max-width: none;
+  margin: 0;
+  font-size: 17px;
+  color: #aaa;
+  text-align: center;
+}
+
+.contacto__section {
+  margin-bottom: 36px;
+  scroll-margin-top: 20px;
+}
+
+.contacto__section h2 {
+  margin: 0 0 14px;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: left;
+  color: #e50914;
+}
+
+/* ---------- Redes sociales ---------- */
+.contacto-redes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.contacto-red {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  color: #fff;
+  text-decoration: none;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-left: 4px solid var(--brand, #e50914);
+  border-radius: 12px;
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.contacto-red:hover {
+  transform: translateY(-3px);
+  background: #1b1b1b;
+  border-color: var(--brand, #e50914);
+}
+
+.contacto-red__icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  background: var(--brand, #333);
+}
+
+.contacto-red__icon img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.contacto-red__text,
+.contacto-canal__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.contacto-red__text strong,
+.contacto-canal__text strong {
+  font-size: 16px;
+}
+
+.contacto-red__text span,
+.contacto-canal__text span {
+  font-size: 13px;
+  color: #aaa;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contacto-arrow {
+  width: 18px;
+  height: 18px;
+  margin-left: auto;
+  flex: 0 0 auto;
+  color: #777;
+}
+
+/* ---------- Canales ---------- */
+.contacto-canales {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.contacto-canal {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  color: #fff;
+  text-decoration: none;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.contacto-canal:hover {
+  transform: translateY(-3px);
+  border-color: #e50914;
+}
+
+.contacto-canal__logo {
+  flex: 0 0 auto;
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #333;
+  background: #000;
+}
+
+.contacto-canal__btn {
+  margin-left: auto;
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  background: #e50914;
+  border-radius: 20px;
+}
+
+/* ---------- Correo ---------- */
+.contacto-correo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 16px;
+  padding: 18px;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+}
+
+.contacto-correo__icon {
+  width: 34px;
+  height: 34px;
+  color: #e50914;
+  flex: 0 0 auto;
+}
+
+.contacto-correo__mail {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.contacto-correo__actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.contacto-btn {
+  padding: 9px 18px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  background: #e50914;
+  border: 1px solid #e50914;
+  border-radius: 20px;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.contacto-btn:hover {
+  background: #94080d;
+  border-color: #94080d;
+}
+
+.contacto-btn--ghost {
+  background: transparent;
+  border-color: #555;
+  color: #ddd;
+}
+
+.contacto-btn--ghost:hover {
+  background: #222;
+  border-color: #777;
+}
+
+/* ---------- Celular y tableta ---------- */
+@media screen and (max-width: 1205px) {
+  .contacto {
+    padding: 16px 16px 24px;
+  }
+
+  .contacto__header {
+    margin-bottom: 20px;
+  }
+
+  .contacto__header h1 {
+    font-size: 26px;
+  }
+
+  .contacto__header p {
+    font-size: 14px;
+  }
+
+  .contacto__section {
+    margin-bottom: 24px;
+  }
+
+  .contacto__section h2 {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .contacto-redes {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .contacto-red {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .contacto-red:hover,
+  .contacto-canal:hover {
+    transform: none;
+  }
+
+  .contacto-red__icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .contacto-red__icon img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .contacto-red__text strong {
+    font-size: 14px;
+  }
+
+  .contacto-arrow {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+
+  .contacto-canales {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .contacto-canal {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .contacto-canal__logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .contacto-canal__btn {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  .contacto-correo {
+    padding: 14px;
+  }
+
+  .contacto-correo__mail {
+    font-size: 16px;
+  }
+
+  .contacto-correo__actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .contacto-btn {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+@media screen and (min-width: 700px) and (max-width: 1205px) {
+  .contacto {
+    max-width: 800px;
+  }
+
+  .contacto-redes {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .contacto-canales {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

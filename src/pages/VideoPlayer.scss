@@ -129,3 +129,309 @@
 
   }
 
+
+  /* Descripción tal cual viene de YouTube (respeta saltos de línea) */
+  .episode-description {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+
+  .episode-description a {
+    color: #ff4d4d;
+  }
+
+  .player-status {
+    color: #fff;
+    padding: 40px 70px;
+  }
+
+  /* Descripción desplegable debajo del video */
+  .description-toggle {
+    width: 1000px;
+    max-width: 90%;
+    margin: 20px auto 0;
+  }
+
+  .description-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #ff0000;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .description-button:hover {
+    background-color: #94080d;
+  }
+
+  .description-panel {
+    margin-top: 15px;
+    padding: 20px;
+    background-color: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    animation: descriptionFadeIn 0.3s ease;
+  }
+
+  .description-panel .episode-description {
+    max-width: none;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  @keyframes descriptionFadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---- Espaciado compacto alrededor del video ---- */
+  .series-info .seriesLogo {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .series-info h2 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .video-section ins.adsbygoogle {
+    margin: 10px auto;
+  }
+
+  /* Si AdSense no tiene anuncio para mostrar, que no deje un hueco vacío */
+  .video-section ins.adsbygoogle[data-ad-status="unfilled"] {
+    display: none !important;
+  }
+
+  .video-section .description-toggle {
+    margin-top: 12px;
+  }
+
+  .button-container {
+    margin-top: 15px;
+  }
+
+  /* ---- Logo y título del video (responsivo) ----
+     Computadora (≥1280px): logo a la izquierda y título a la derecha.
+     Tableta (501–1279px): logo arriba y título abajo, ambos centrados.
+     Celular (≤500px): igual que tableta pero más compacto.
+     Estas reglas reemplazan a las anteriores (incluido el margin-left: -50px
+     que sacaba el título de la pantalla). */
+  .series-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 40px;
+    padding: 10px 70px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .series-info .seriesLogo {
+    flex-shrink: 0;
+    margin: 0;
+    max-height: 150px;
+    max-width: 350px;
+    object-fit: contain;
+  }
+
+  .series-info .episode-details {
+    flex: 1;
+    min-width: 0; /* permite que el título largo se ajuste en varias líneas */
+  }
+
+  .series-info h2 {
+    margin: 0;
+    text-align: left;
+    font-size: 32px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  @media screen and (max-width: 1279px) {
+    .series-info {
+      flex-direction: column;
+      gap: 12px;
+      padding: 10px 24px;
+      text-align: center;
+    }
+
+    .series-info .seriesLogo {
+      max-height: 110px;
+      max-width: 70%;
+    }
+
+    .series-info .episode-details {
+      width: 100%;
+    }
+
+    .series-info h2 {
+      text-align: center;
+      font-size: 26px;
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    .series-info {
+      gap: 8px;
+      padding: 8px 16px;
+    }
+
+    .series-info .seriesLogo {
+      max-height: 80px;
+      max-width: 80%;
+    }
+
+    .series-info h2 {
+      font-size: 20px;
+    }
+  }
+
+  /* ---- Video embebido (responsivo) ----
+     Mantiene proporción 16:9 y deja margen a los lados en cualquier pantalla.
+     Reemplaza los altos fijos anteriores (600px / 400px), que en teléfonos
+     pequeños hacían el video más alto y ancho que la pantalla. */
+  .video-section iframe {
+    width: 1000px;
+    max-width: 92%;
+    height: auto;
+    max-height: none;
+    aspect-ratio: 16 / 9;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* El botón de descripción se alinea con el ancho del video */
+  .video-section .description-toggle {
+    width: 1000px;
+    max-width: 92%;
+  }
+
+  @media screen and (max-width: 500px) {
+    .video-section iframe,
+    .video-section .description-toggle {
+      width: auto;
+      max-width: none;
+      margin-left: 16px;
+      margin-right: 16px;
+    }
+
+    .video-section iframe {
+      width: calc(100% - 32px);
+    }
+  }
+
+/* ---- Botón "HD": versión en mejor calidad (solo episodios que la tienen) ---- */
+.video-section .player-frame {
+  position: relative;
+  width: 1000px;
+  max-width: 92%;
+  margin: 0 auto;
+}
+
+.video-section .player-frame iframe {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+/* Computadora: botón circular a la derecha del video, centrado */
+.hd-switch {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 14px);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 64px;
+}
+
+.hd-button {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #fff;
+  background: #1c1c1c;
+  border: 2px solid #4a4a4a;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    border-color: #e50914;
+    transform: scale(1.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+}
+
+.player-frame.is-hd .hd-button {
+  background: #e50914;
+  border-color: #e50914;
+  box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.25);
+}
+
+.hd-label {
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+  color: #aaa;
+}
+
+.player-frame.is-hd .hd-label {
+  color: #fff;
+}
+
+/* Pantallas sin espacio a los lados: el botón va debajo del video, a la derecha */
+@media screen and (max-width: 1205px) {
+  .hd-switch {
+    position: static;
+    transform: none;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    width: auto;
+    margin-top: 10px;
+  }
+
+  .hd-button {
+    width: 46px;
+    height: 46px;
+    font-size: 14px;
+  }
+
+  .hd-label {
+    font-size: 13px;
+    text-align: right;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .video-section .player-frame {
+    width: calc(100% - 32px);
+    max-width: none;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .video-section .player-frame iframe {
+    width: 100%;
+    margin: 0;
+  }
+}

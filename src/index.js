@@ -1,59 +1,63 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter, Routes, Route } from "react-router-dom"; // Note the change here
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ScrollToTop from "./ScrolltToTop.js";
 import Home from "./pages/Home";
 import News from "./pages/News";
 import Channels from "./pages/Channels";
 import Videos from "./pages/Videos";
 import Wiki from "./pages/Wiki";
-import Store from "./pages/Store";
-import SocialMedia from "./pages/SocialMedia";
+import WikiHub from "./pages/WikiHub";
+import WikiCatalogPage from "./pages/WikiCatalogPage";
+import Contacto from "./pages/Contacto";
+import Juegos from "./pages/Juegos";
 import VideoPlayer from "./pages/VideoPlayer";
-import episodes from "./data/episodes.js"
-import DMB from "./data/DMB.js"
+import SeriesVideos from "./pages/SeriesVideos";
+import { PlaylistsProvider } from "./context/PlaylistsContext";
 import news from './data/news.js'
-import LB from "./data/LB.js";
-import CW from "./data/CW.js";
-import Creepys from "./data/Creepys.js";
-import PD from "./data/PD.js";
-import Lost from "./data/lost.js";
-import Trailers from "./data/trailers.js";
-import Jueguemos from "./data/Jueguemos.js";
-import Jueguemos2 from "./data/Jueguemos2.js";
-import Extras from "./data/extra.js";
-import New from "./data/New.js";
-import Next from "./data/Next.js";
 
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(
   <BrowserRouter>
+    <PlaylistsProvider>
     <ScrollToTop />
     <Routes> {/* Use Routes instead of Switch */}
       
       <Route path="/" element={<Home />} />
       <Route path="/news" element={<News articles={news} />} />
+      {/* Canales: página oculta por ahora (sus canales están en Contacto); se puede volver a enlazar */}
       <Route path="/channels" element={<Channels />} />
-      <Route path="/videos" element={<Videos episodesData={episodes} />} />
-      <Route path="/wiki" element={<Wiki />} />
-      <Route path="/store" element={<Store />} />
-      <Route path="/socialmedia" element={<SocialMedia />} />
-      <Route path="/videos/DMB/:episodeId" element={<VideoPlayer episodesData={DMB} />} />
-      <Route path="/videos/LB/:episodeId" element={<VideoPlayer episodesData={LB} />} />
-      <Route path="/videos/CW/:episodeId" element={<VideoPlayer episodesData={CW} />} />
-      <Route path="/videos/Creepy/:episodeId" element={<VideoPlayer episodesData={Creepys} />} />
-      <Route path="/videos/PD/:episodeId" element={<VideoPlayer episodesData={PD} />} />
-      <Route path="/videos/Jueguemos/:episodeId" element={<VideoPlayer episodesData={Jueguemos} />} />
-      <Route path="/videos/Jueguemos2/:episodeId" element={<VideoPlayer episodesData={Jueguemos2} />} />
-      <Route path="/videos/Extra/:episodeId" element={<VideoPlayer episodesData={Extras} />} />
-      <Route path="/videos/Lost/:episodeId" element={<VideoPlayer episodesData={Lost} />} />
-      <Route path="/videos/Trailers/:episodeId" element={<VideoPlayer episodesData={Trailers} />} />
-      <Route path="/videos/New/:episodeId" element={<VideoPlayer episodesData={New} />} />
-      <Route path="/videos/Next/:episodeId" element={<VideoPlayer episodesData={Next} />} />
-      <Route path="/videos/:episodeId" element={<VideoPlayer episodesData={episodes} />} />
+      <Route path="/videos" element={<Videos />} />
+      {/* Wiki: menú de secciones; Personajes es la página de Wiki de siempre */}
+      <Route path="/wiki" element={<WikiHub />} />
+      <Route path="/wiki/personajes" element={<Wiki />} />
+      <Route path="/wiki/lugares" element={<WikiCatalogPage tipo="lugares" />} />
+      <Route path="/wiki/objetos" element={<WikiCatalogPage tipo="objetos" />} />
+      <Route path="/wiki/series" element={<WikiCatalogPage tipo="series" />} />
+      <Route path="/wiki/museo" element={<WikiCatalogPage tipo="museo" />} />
+      {/* "???" ahora es Juegos (los links viejos a /store siguen funcionando) */}
+      <Route path="/juegos" element={<Juegos />} />
+      {/* FlipSlope sale en diciembre: por ahora el link regresa a Juegos */}
+      <Route path="/juegos/flipslope" element={<Navigate to="/juegos" replace />} />
+      <Route path="/store" element={<Navigate to="/juegos" replace />} />
+      <Route path="/contacto" element={<Contacto />} />
+      {/* Redes Sociales ahora es Contacto (los links viejos siguen funcionando) */}
+      <Route path="/socialmedia" element={<Navigate to="/contacto" replace />} />
+      {/* Las secciones y sus videos salen de src/config/playlists.js */}
+      <Route path="/videos/:section/:episodeId" element={<VideoPlayer />} />
+      {/* "Ver todo" de una serie; claves que no existen (o links viejos /videos/<número>) regresan a /videos */}
+      <Route path="/videos/:section" element={<SeriesVideos />} />
       <Route path="/videos/-1" element={<Home />} />
     </Routes>
+    </PlaylistsProvider>
   </BrowserRouter>,
   rootElement
 );
+
+// Registra el service worker para que la página se pueda instalar como app.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('No se pudo registrar el service worker', err));
+  });
+}

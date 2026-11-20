@@ -7,13 +7,28 @@
     margin-left: -25%;
 }
 
-.embed {
-    display: flex;
-    gap: "2px";
-}
+/* Celular y tableta: la imagen de Discord ocupa el ancho disponible.
+   (La clase .image-container también la usa la Wiki con width: 30%, por eso
+   aquí se fija explícitamente para Noticias.) */
+@media screen and (max-width: 1205px) {
+  .news .image-container {
+    width: auto;
+    margin: 16px 16px 0;
+  }
 
-@media screen and (min-width:375px) and (max-width:653px){
-    .embed {
-        display: grid;
-    }
+  .news .image-container a {
+    display: block;
+  }
+
+  .news .image-container img {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .news .yt-posts {
+    margin-top: 1.5rem;
+  }
 }

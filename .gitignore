@@ -21,3 +21,21 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# exportaciones locales (Discord, etc.)
+/export
+
+# respaldos del administrador de la Wiki
+/.respaldos-wiki
+
+# FlipSlope y su ranking salen en diciembre: se quedan en tu computadora pero NO se suben
+# (pasos para activarlo en _flipslope-diciembre/RESTAURAR.md)
+/src/games/flipslope/
+/src/pages/JuegoFlipSlope.js
+/netlify/functions/ranking.mjs
+/netlify/lib/ranking.js
+/scripts/flipslope/
+/_flipslope-diciembre/
+
+# Proyecto del comercial (Remotion, muy pesado)
+/comercial-video/

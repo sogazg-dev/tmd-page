@@ -106,3 +106,30 @@
         font-weight: bold;
     }
 }
+/* Las filas de episodios usan margin-bottom negativo (-6rem) para acomodar las
+   flechas de desplazamiento. Cuando el footer viene justo después de una fila
+   con videos (página de un video y la última fila de /videos), se compensa para
+   que el footer quede abajo y no tape los episodios. */
+.episode-list:not(.episode-list--empty) + .footer {
+  margin-top: 7rem;
+}
+
+/* En celular las filas ya no usan margen negativo: solo un pequeño espacio */
+@media screen and (max-width: 1205px) {
+  .episode-list:not(.episode-list--empty) + .footer {
+    margin-top: 24px;
+  }
+
+  /* El footer no debe hacer la página más ancha que la pantalla */
+  .footer {
+    box-sizing: border-box;
+  }
+}
+
+/* En celular y tableta no se muestra el footer (la navegación es el menú
+   inferior y Contacto tiene su propio botón). */
+@media screen and (max-width: 1205px) {
+  .footer {
+    display: none;
+  }
+}

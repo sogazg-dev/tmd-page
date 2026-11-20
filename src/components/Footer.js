@@ -30,7 +30,7 @@ const Footer = () => {
           <p>Redes Sociales:</p>
         <a class='FB' href="https://www.facebook.com/profile.php?id=61551168365082"><img src={fblogo} alt="Facebook" /></a>
         <a class='X' href="https://x.com/_TMD_2"><img src={xlogo} alt="X" /></a>
-        <a class='TT' href="https://discord.gg/KWkEGwySbv"><img src={ttlogo} alt="Discord" /></a>
+        <a class='TT' href="https://discord.com/invite/BHzGzExyq5"><img src={ttlogo} alt="Discord" /></a>
         <a class='PTRN' href="https://www.youtube.com/@TMD2.0"><img src={ptrnlogo} alt="YouTube" /></a>
       </div>
       </footer>

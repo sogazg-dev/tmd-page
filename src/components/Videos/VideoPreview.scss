@@ -4,6 +4,14 @@ html, body {
     
 }
 
+/* "clip" evita el scroll horizontal igual que "hidden", pero sin romper los
+   elementos con position: sticky (barra de accesos rápidos en Videos). */
+@supports (overflow-x: clip) {
+  html, body {
+    overflow-x: clip;
+  }
+}
+
 .episode-preview-container {
     position: relative;
     width: 100%;
@@ -177,4 +185,107 @@ html, body {
       
     }
   
+  }
+  .episode-preview-loading {
+    min-height: 200px;
+    color: #fff;
+    padding: 20px;
+  }
+
+  /* ===================================================================
+     Celular y tableta (≤1205px): portada compacta tipo app
+     =================================================================== */
+  @media screen and (max-width: 1205px) {
+    .episode-preview-container .background-image {
+      display: flex;
+      align-items: flex-end;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      max-height: min(46vh, 380px);
+      margin: 0;
+      background-size: cover;
+      background-position: center top;
+    }
+
+    .episode-preview-container .gradient-overlay {
+      background:
+        linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.55) 45%, transparent 75%),
+        linear-gradient(to right, rgba(0, 0, 0, 0.5), transparent 60%);
+    }
+
+    .episode-preview-container .content {
+      width: 100%;
+      margin: 0;
+      padding: 12px 16px 14px;
+      box-sizing: border-box;
+    }
+
+    .episode-preview-container .series-logo {
+      display: block;
+      height: 34px;
+      max-width: 45%;
+      object-fit: contain;
+      object-position: left center;
+      margin: 0 0 6px;
+    }
+
+    .episode-preview-container .title {
+      margin: 0 0 4px;
+      font-size: 16px;
+      line-height: 1.25;
+      text-align: left;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .episode-preview-container .description {
+      max-width: 560px;
+      margin: 0 0 10px;
+      font-size: 12px;
+      line-height: 1.35;
+      color: #ddd;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .episode-preview-container .play-button {
+      display: inline-flex;
+      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 6px;
+    }
+
+    .episode-preview-container .play-icon {
+      margin-right: 6px;
+    }
+  }
+
+  /* Tableta: un poco más de aire */
+  @media screen and (min-width: 600px) and (max-width: 1205px) {
+    .episode-preview-container .content {
+      padding: 18px 24px 20px;
+    }
+
+    .episode-preview-container .series-logo {
+      height: 48px;
+    }
+
+    .episode-preview-container .title {
+      font-size: 22px;
+    }
+
+    .episode-preview-container .description {
+      font-size: 14px;
+    }
+
+    .episode-preview-container .play-button {
+      font-size: 16px;
+      padding: 10px 22px;
+    }
   }

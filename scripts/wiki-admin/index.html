@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administrador de la Wiki · TMD</title>
+<style>
+  :root {
+    --fondo: #0c0c0d;
+    --panel: #161618;
+    --panel2: #1e1e21;
+    --borde: #2c2c30;
+    --texto: #f2f2f2;
+    --suave: #a3a3aa;
+    --rojo: #ff2f2f;
+    --rojo-osc: #c41e1e;
+    --verde: #3ecf6e;
+    --radio: 12px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--fondo); color: var(--texto); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  a { color: #ff6b6b; }
+
+  /* ---------- estructura ---------- */
+  .app { display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
+  aside { background: var(--panel); border-right: 1px solid var(--borde); padding: 22px 14px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 4px; }
+  .marca { padding: 0 10px 18px; }
+  .marca b { display: block; font-size: 20px; letter-spacing: .5px; }
+  .marca b span { color: var(--rojo); }
+  .marca small { color: var(--suave); }
+  .nav-sec { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 10px 12px; border: 0; border-radius: 10px; background: none; text-align: left; font-weight: 600; color: var(--suave); }
+  .nav-sec:hover { background: var(--panel2); color: var(--texto); }
+  .nav-sec.activa { background: var(--rojo); color: #fff; }
+  .nav-sec .cuenta { font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: rgba(255,255,255,.1); }
+  .nav-sec.activa .cuenta { background: rgba(0,0,0,.25); }
+  .aside-pie { margin-top: auto; padding: 10px; font-size: 12px; color: var(--suave); }
+  .aside-pie label { display: block; margin-bottom: 4px; }
+  .aside-pie input { width: 100%; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--borde); background: var(--fondo); font-size: 12px; }
+
+  main { padding: 26px 32px 60px; min-width: 0; }
+  .cabeza { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+  .cabeza h1 { margin: 0; font-size: 28px; }
+  .cabeza p { margin: 4px 0 0; color: var(--suave); font-size: 13px; }
+  .cabeza code { background: var(--panel2); padding: 1px 6px; border-radius: 6px; }
+  .acciones { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .btn { border: 1px solid var(--borde); background: var(--panel2); padding: 9px 16px; border-radius: 10px; font-weight: 600; text-decoration: none; color: var(--texto); display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { border-color: #46464c; }
+  .btn-rojo { background: var(--rojo); border-color: var(--rojo); color: #fff; }
+  .btn-rojo:hover { background: var(--rojo-osc); border-color: var(--rojo-osc); }
+  .btn-peligro { background: none; border-color: #5a2323; color: #ff7a7a; }
+  .btn-peligro:hover { background: #2a1111; }
+  .btn:disabled { opacity: .5; cursor: default; }
+
+  .barra { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+  .buscar { flex: 1 1 240px; max-width: 360px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--borde); background: var(--panel); }
+  .chip { border: 1px solid var(--borde); background: var(--panel); border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 600; color: var(--suave); }
+  .chip.activa { background: var(--texto); color: #111; border-color: var(--texto); }
+
+  /* ---------- tarjetas ---------- */
+  .rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
+  .rejilla.vertical { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .tarjeta { border: 1px solid var(--borde); background: var(--panel); border-radius: var(--radio); overflow: hidden; padding: 0; text-align: left; display: flex; flex-direction: column; transition: transform .12s, border-color .12s; }
+  .tarjeta:hover { transform: translateY(-2px); border-color: #4a4a50; }
+  .tarjeta .mini { aspect-ratio: 16 / 10; background: #0a0a0a; display: grid; place-items: center; overflow: hidden; }
+  .vertical .tarjeta .mini { aspect-ratio: 590 / 1004; }
+  .tarjeta .mini img { width: 100%; height: 100%; object-fit: cover; }
+  .contener .tarjeta .mini img { object-fit: contain; padding: 10px; }
+  .tarjeta .info { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 6px; }
+  .tarjeta .nombre { font-weight: 700; font-size: 14px; line-height: 1.25; }
+  .etiqueta { align-self: flex-start; font-size: 11px; font-weight: 700; letter-spacing: .4px; padding: 1px 7px; border-radius: 6px; background: #2a2a2e; color: #ccc; }
+  .vacio { padding: 50px; text-align: center; color: var(--suave); border: 1px dashed var(--borde); border-radius: var(--radio); }
+
+  /* ---------- editor ---------- */
+  .velo { position: fixed; inset: 0; background: rgba(0,0,0,.72); display: flex; justify-content: flex-end; z-index: 10; }
+  .editor { width: min(720px, 100%); height: 100%; background: var(--panel); border-left: 1px solid var(--borde); display: flex; flex-direction: column; animation: entra .18s ease-out; }
+  @keyframes entra { from { transform: translateX(30px); opacity: .5; } to { transform: none; opacity: 1; } }
+  .editor header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid var(--borde); }
+  .editor header h2 { margin: 0; font-size: 20px; }
+  .cerrar { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--borde); background: var(--panel2); font-size: 20px; line-height: 1; }
+  .editor .cuerpo { flex: 1; overflow-y: auto; padding: 20px 24px 30px; display: flex; flex-direction: column; gap: 22px; }
+  .editor footer { display: flex; gap: 10px; padding: 14px 24px; border-top: 1px solid var(--borde); background: var(--panel); }
+  .editor footer .espacio { flex: 1; }
+  .campo > label, .campo > .titulo { display: block; font-weight: 700; margin-bottom: 6px; }
+  .campo .ayuda { font-size: 12px; color: var(--suave); margin: -2px 0 8px; }
+  .campo input[type=text], .campo input[type=url], .campo textarea { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--borde); background: var(--fondo); }
+  .campo textarea { min-height: 150px; resize: vertical; }
+  .campo input:focus, .campo textarea:focus, .buscar:focus { outline: 2px solid var(--rojo); outline-offset: -1px; }
+  .series { display: flex; flex-wrap: wrap; gap: 8px; }
+  .serie-op { border: 2px solid var(--borde); background: #0a0a0a; border-radius: 10px; width: 92px; height: 54px; padding: 6px; display: grid; place-items: center; }
+  .serie-op img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .serie-op.activa { border-color: var(--rojo); box-shadow: 0 0 0 3px rgba(255,47,47,.25); }
+
+  .imagen { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: start; }
+  .imagen.vertical { grid-template-columns: 150px 1fr; }
+  .soltar { border: 2px dashed var(--borde); border-radius: var(--radio); background: #0a0a0a; aspect-ratio: 16 / 10; display: grid; place-items: center; overflow: hidden; color: var(--suave); font-size: 13px; text-align: center; padding: 0; }
+  .vertical .soltar { aspect-ratio: 590 / 1004; }
+  .soltar.encima { border-color: var(--rojo); }
+  .soltar img { width: 100%; height: 100%; object-fit: contain; }
+  .imagen .lado { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--suave); }
+  .nueva { color: var(--verde); font-weight: 700; }
+
+  .galeria { display: flex; flex-direction: column; gap: 8px; }
+  .g-fila { display: grid; grid-template-columns: 64px 1fr auto auto auto; gap: 8px; align-items: center; background: var(--panel2); border-radius: 10px; padding: 6px; }
+  .g-fila img { width: 64px; height: 48px; object-fit: cover; border-radius: 6px; background: #000; }
+  .g-fila input { padding: 7px 10px; border-radius: 8px; border: 1px solid var(--borde); background: var(--fondo); width: 100%; }
+  .icono { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--borde); background: var(--panel); padding: 0; }
+  .icono:disabled { opacity: .35; cursor: default; }
+  .e-fila { display: grid; grid-template-columns: 1fr 1.4fr auto; gap: 8px; }
+  .e-fila input { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--borde); background: var(--fondo); }
+  .medio { font-size: 13px; color: var(--suave); background: var(--panel2); border-radius: 8px; padding: 8px 10px; }
+
+  /* ---------- confirmación y avisos ---------- */
+  .velo-centro { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: grid; place-items: center; z-index: 20; padding: 16px; }
+  .dialogo { width: min(520px, 100%); background: var(--panel); border: 1px solid var(--borde); border-radius: 16px; padding: 22px 24px; box-shadow: 0 20px 60px rgba(0,0,0,.6); animation: pop .15s ease-out; }
+  @keyframes pop { from { transform: scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+  .dialogo h3 { margin: 0 0 6px; font-size: 19px; }
+  .dialogo p { margin: 0 0 12px; color: var(--suave); }
+  .dialogo ul { margin: 0 0 18px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; max-height: 45vh; overflow-y: auto; }
+  .dialogo li { background: var(--panel2); border-radius: 8px; padding: 8px 10px; font-size: 14px; overflow-wrap: anywhere; }
+  .dialogo li b { color: #fff; }
+  .dialogo li .antes { color: #ff8f8f; text-decoration: line-through; }
+  .dialogo li .despues { color: #8ff0ae; }
+  .dialogo .botones { display: flex; justify-content: flex-end; gap: 10px; }
+  .aviso { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #fff; color: #111; font-weight: 600; padding: 12px 18px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.5); z-index: 30; max-width: calc(100% - 32px); }
+  .aviso.error { background: #ff4d4d; color: #fff; }
+  [hidden] { display: none !important; }
+
+  @media (max-width: 760px) {
+    .app { grid-template-columns: 1fr; }
+    aside { position: static; height: auto; flex-direction: row; flex-wrap: wrap; padding: 12px; }
+    .marca, .aside-pie { display: none; }
+    .nav-sec { width: auto; gap: 8px; }
+    main { padding: 18px 14px 50px; }
+    .imagen, .imagen.vertical { grid-template-columns: 1fr; }
+    .soltar { max-width: 260px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="marca"><b>TMD <span>Wiki</span></b><small>Administrador local</small></div>
+    <nav id="nav"></nav>
+    <div class="aside-pie">
+      <label for="sitio">Página local (npm start)</label>
+      <input id="sitio" type="text" value="http://localhost:3000">
+    </div>
+  </aside>
+
+  <main>
+    <div class="cabeza">
+      <div>
+        <h1 id="titulo">Wiki</h1>
+        <p id="subtitulo"></p>
+      </div>
+      <div class="acciones">
+        <a id="ver" class="btn" target="_blank" rel="noreferrer">Ver en la página ↗</a>
+        <button id="agregar" class="btn btn-rojo" type="button">+ Agregar tarjeta</button>
+      </div>
+    </div>
+    <div class="barra">
+      <input id="buscar" class="buscar" type="search" placeholder="Buscar por nombre…">
+      <div id="filtros" class="acciones"></div>
+    </div>
+    <div id="rejilla" class="rejilla"></div>
+  </main>
+</div>
+
+<!-- Editor de tarjeta -->
+<div id="velo" class="velo" hidden>
+  <form id="editor" class="editor" autocomplete="off">
+    <header>
+      <h2 id="ed-titulo">Editar tarjeta</h2>
+      <button type="button" class="cerrar" data-cerrar aria-label="Cerrar">×</button>
+    </header>
+    <div class="cuerpo">
+      <div class="campo">
+        <label for="f-nombre">Nombre</label>
+        <input id="f-nombre" type="text" required>
+      </div>
+      <div class="campo">
+        <span class="titulo">Serie</span>
+        <div id="f-series" class="series"></div>
+      </div>
+      <div class="campo">
+        <span class="titulo">Imagen</span>
+        <p id="f-ayuda-img" class="ayuda"></p>
+        <div id="f-imagen" class="imagen">
+          <button id="f-soltar" type="button" class="soltar">Arrastra una imagen<br>o haz click</button>
+          <div class="lado">
+            <button id="f-cambiar" type="button" class="btn">Elegir imagen…</button>
+            <span id="f-ruta"></span>
+            <span>La imagen se guarda tal cual, sin modificarla.</span>
+          </div>
+        </div>
+        <input id="f-archivo" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" hidden>
+      </div>
+      <div class="campo">
+        <label for="f-desc">Descripción</label>
+        <p class="ayuda">Los saltos de línea se respetan en la página.</p>
+        <textarea id="f-desc"></textarea>
+      </div>
+      <div id="f-extras" class="campo" hidden>
+        <span class="titulo">Galería</span>
+        <p class="ayuda">Imágenes extra de la entrada, con su pie de foto (opcional).</p>
+        <div id="f-galeria" class="galeria"></div>
+        <p><button id="f-mas-fotos" type="button" class="btn">+ Agregar imágenes</button></p>
+        <input id="f-archivos" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" multiple hidden>
+        <span class="titulo" style="margin-top:18px">Enlaces</span>
+        <div id="f-enlaces" class="galeria"></div>
+        <p><button id="f-mas-enlace" type="button" class="btn">+ Agregar enlace</button></p>
+        <div id="f-medios"></div>
+      </div>
+    </div>
+    <footer>
+      <button id="f-eliminar" type="button" class="btn btn-peligro">Eliminar tarjeta</button>
+      <span class="espacio"></span>
+      <button type="button" class="btn" data-cerrar>Cancelar</button>
+      <button id="f-guardar" type="submit" class="btn btn-rojo">Guardar cambios</button>
+    </footer>
+  </form>
+</div>
+
+<!-- Confirmación -->
+<div id="confirmar" class="velo-centro" hidden>
+  <div class="dialogo" role="dialog" aria-modal="true" aria-labelledby="c-titulo">
+    <h3 id="c-titulo"></h3>
+    <p id="c-texto"></p>
+    <ul id="c-lista"></ul>
+    <div class="botones">
+      <button id="c-no" type="button" class="btn">Volver</button>
+      <button id="c-si" type="button" class="btn btn-rojo">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="aviso" class="aviso" hidden></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const urlImg = (ruta) => (!ruta ? '' : ruta.startsWith('data:') ? ruta : '/archivo?ruta=' + encodeURIComponent(ruta));
+
+let SECCIONES = [];
+let LOGOS = {};
+let sec = null;          // sección actual
+let items = [];
+let filtroSerie = null;
+let edicion = null;      // { indice, original, item, imagenes, nuevas }
+
+// ---------------- datos ----------------
+async function pedir(url, datos) {
+  const r = await fetch(url, datos ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) } : {});
+  const j = await r.json().catch(() => ({ error: 'Respuesta inválida del servidor' }));
+  if (!r.ok || j.error) throw new Error(j.error || 'Error');
+  return j;
+}
+
+async function iniciar() {
+  try { $('#sitio').value = localStorage.getItem('wiki-admin-sitio') || $('#sitio').value; } catch (e) { /* */ }
+  $('#sitio').addEventListener('change', () => { try { localStorage.setItem('wiki-admin-sitio', $('#sitio').value); } catch (e) { /* */ } pintarCabeza(); });
+  const j = await pedir('/api/secciones');
+  SECCIONES = j.secciones;
+  LOGOS = j.logos;
+  const inicial = (location.hash || '').slice(1);
+  await abrirSeccion(SECCIONES.find((s) => s.id === inicial) ? inicial : SECCIONES[0].id);
+}
+
+function pintarNav() {
+  $('#nav').innerHTML = SECCIONES.map((s) => `
+    <button type="button" class="nav-sec${sec && s.id === sec.id ? ' activa' : ''}" data-sec="${s.id}">
+      <span>${esc(s.titulo)}</span><span class="cuenta">${s.total ?? '!'}</span>
+    </button>`).join('');
+}
+
+async function abrirSeccion(id) {
+  sec = SECCIONES.find((s) => s.id === id);
+  location.hash = id;
+  filtroSerie = null;
+  $('#buscar').value = '';
+  try {
+    items = (await pedir('/api/seccion/' + id)).items;
+    sec.total = items.length;
+  } catch (e) { items = []; aviso(e.message, true); }
+  pintarNav();
+  pintarCabeza();
+  pintarFiltros();
+  pintar();
+}
+
+function pintarCabeza() {
+  $('#titulo').textContent = sec.titulo;
+  $('#subtitulo').innerHTML = `${items.length} tarjetas · archivo <code>${esc(sec.archivo)}</code>`;
+  $('#ver').href = $('#sitio').value.replace(/\/+$/, '') + sec.ruta;
+}
+
+function pintarFiltros() {
+  $('#filtros').innerHTML = [`<button type="button" class="chip${filtroSerie ? '' : ' activa'}" data-serie="">Todas</button>`]
+    .concat(sec.series.map((s) => `<button type="button" class="chip${filtroSerie === s ? ' activa' : ''}" data-serie="${s}">${s}</button>`)).join('');
+}
+
+function pintar() {
+  const q = $('#buscar').value.trim().toLowerCase();
+  const rej = $('#rejilla');
+  rej.className = 'rejilla' + (sec.id === 'personajes' ? ' vertical' : '') + (sec.id === 'series' ? ' contener' : '');
+  const visibles = items.map((it, i) => ({ it, i }))
+    .filter(({ it }) => !filtroSerie || it.serie === filtroSerie)
+    .filter(({ it }) => it.nombre.toLowerCase().includes(q));
+  if (!visibles.length) {
+    rej.innerHTML = `<div class="vacio">${items.length ? 'Ninguna tarjeta coincide.' : 'Esta sección no tiene tarjetas todavía.'}</div>`;
+    return;
+  }
+  rej.innerHTML = visibles.map(({ it, i }) => `
+    <button type="button" class="tarjeta" data-i="${i}">
+      <span class="mini">${it.imagen ? `<img src="${esc(urlImg(it.imagen))}" alt="" loading="lazy">` : '<span>Sin imagen</span>'}</span>
+      <span class="info"><span class="nombre">${esc(it.nombre)}</span><span class="etiqueta">${esc(it.serie)}</span></span>
+    </button>`).join('');
+}
+
+// ---------------- editor ----------------
+const copia = (o) => JSON.parse(JSON.stringify(o));
+
+function abrirEditor(indice) {
+  const nuevo = indice === null;
+  const base = nuevo ? { nombre: '', imagen: '', serie: filtroSerie || sec.series[0], descripcion: '' } : copia(items[indice]);
+  if (sec.extras) { base.galeria = base.galeria || []; base.enlaces = base.enlaces || []; }
+  edicion = { indice, original: nuevo ? null : items[indice].nombre, item: base, antes: copia(base), imagenes: {}, nombresArchivo: {}, sucio: false };
+  $('#ed-titulo').textContent = nuevo ? `Nueva tarjeta · ${sec.titulo}` : `Editar · ${sec.titulo}`;
+  $('#f-nombre').value = base.nombre;
+  $('#f-desc').value = base.descripcion || '';
+  $('#f-ayuda-img').textContent = sec.ayudaImagen;
+  $('#f-imagen').classList.toggle('vertical', sec.id === 'personajes');
+  $('#f-eliminar').hidden = nuevo;
+  $('#f-guardar').textContent = nuevo ? 'Agregar tarjeta' : 'Guardar cambios';
+  $('#f-extras').hidden = !sec.extras;
+  pintarSeries();
+  pintarImagen();
+  if (sec.extras) { pintarGaleria(); pintarEnlaces(); pintarMedios(); }
+  $('#velo').hidden = false;
+  setTimeout(() => $('#f-nombre').focus(), 50);
+}
+
+function pintarSeries() {
+  $('#f-series').innerHTML = sec.series.map((s) => `
+    <button type="button" class="serie-op${edicion.item.serie === s ? ' activa' : ''}" data-serie-op="${s}" title="${s}">
+      ${LOGOS[s] ? `<img src="${esc(urlImg(LOGOS[s]))}" alt="${s}">` : esc(s)}
+    </button>`).join('');
+}
+
+function pintarImagen() {
+  const ruta = edicion.item.imagen;
+  const src = ruta.startsWith('nuevo:') ? edicion.imagenes[ruta.slice(6)] : urlImg(ruta);
+  $('#f-soltar').innerHTML = src ? `<img src="${esc(src)}" alt="">` : 'Arrastra una imagen<br>o haz click';
+  $('#f-ruta').innerHTML = ruta.startsWith('nuevo:')
+    ? `<span class="nueva">Nueva: ${esc(edicion.nombresArchivo[ruta.slice(6)])}</span>`
+    : (ruta ? `<code>${esc(ruta)}</code>` : 'Sin imagen');
+  $('#f-cambiar').textContent = ruta ? 'Cambiar imagen…' : 'Elegir imagen…';
+}
+
+function pintarGaleria() {
+  const g = edicion.item.galeria;
+  $('#f-galeria').innerHTML = g.length ? g.map((f, i) => {
+    const src = f.src.startsWith('nuevo:') ? edicion.imagenes[f.src.slice(6)] : urlImg(f.src);
+    return `<div class="g-fila">
+      <img src="${esc(src)}" alt="">
+      <input type="text" data-pie="${i}" value="${esc(f.pie || '')}" placeholder="Pie de foto (opcional)">
+      <button type="button" class="icono" data-subir="${i}" title="Subir" ${i === 0 ? 'disabled' : ''}>↑</button>
+      <button type="button" class="icono" data-bajar="${i}" title="Bajar" ${i === g.length - 1 ? 'disabled' : ''}>↓</button>
+      <button type="button" class="icono" data-quitar="${i}" title="Quitar de la galería">×</button>
+    </div>`;
+  }).join('') : '<div class="medio">Sin galería.</div>';
+}
+
+function pintarEnlaces() {
+  const e = edicion.item.enlaces;
+  $('#f-enlaces').innerHTML = e.length ? e.map((l, i) => `<div class="e-fila">
+      <input type="text" data-etexto="${i}" value="${esc(l.texto)}" placeholder="Texto del enlace">
+      <input type="url" data-eurl="${i}" value="${esc(l.url)}" placeholder="https://…">
+      <button type="button" class="icono" data-equitar="${i}" title="Quitar enlace">×</button>
+    </div>`).join('') : '<div class="medio">Sin enlaces.</div>';
+}
+
+function pintarMedios() {
+  const m = edicion.item.medios || [];
+  $('#f-medios').innerHTML = m.length
+    ? '<span class="titulo" style="margin-top:18px">Video / audio</span>' + m.map((x) => `<div class="medio">${esc(x.tipo)} · ${esc(x.titulo)} — <code>${esc(x.src)}</code></div>`).join('')
+    : '';
+}
+
+let contador = 0;
+function leerArchivo(file) {
+  return new Promise((ok, mal) => {
+    if (!/^image\/(png|jpeg|webp|gif|svg\+xml)$/.test(file.type)) { mal(new Error(`"${file.name}" no es una imagen PNG, JPG, WEBP, GIF o SVG.`)); return; }
+    const r = new FileReader();
+    r.onload = () => {
+      const clave = 'img' + (++contador);
+      edicion.imagenes[clave] = r.result;
+      edicion.nombresArchivo[clave] = file.name;
+      ok('nuevo:' + clave);
+    };
+    r.onerror = () => mal(new Error('No se pudo leer la imagen.'));
+    r.readAsDataURL(file);
+  });
+}
+
+async function ponerImagen(file) {
+  try {
+    edicion.item.imagen = await leerArchivo(file);
+    edicion.sucio = true;
+    pintarImagen();
+  } catch (e) { aviso(e.message, true); }
+}
+
+function leerFormulario() {
+  edicion.item.nombre = $('#f-nombre').value.trim();
+  edicion.item.descripcion = $('#f-desc').value.replace(/\s+$/, '');
+  if (sec.extras) {
+    edicion.item.enlaces = edicion.item.enlaces.filter((l) => l.texto.trim() || l.url.trim());
+  }
+}
+
+// Lista de cambios para la confirmación
+function cambios() {
+  const a = edicion.antes; const b = edicion.item; const out = [];
+  const corto = (s) => { s = String(s || ''); return s.length > 90 ? s.slice(0, 90) + '…' : s; };
+  if (edicion.indice === null) {
+    out.push(`<b>Nombre:</b> ${esc(b.nombre)}`);
+    out.push(`<b>Serie:</b> ${esc(b.serie)}`);
+    out.push(`<b>Imagen:</b> <span class="despues">${esc(edicion.nombresArchivo[b.imagen.slice(6)] || b.imagen)}</span>`);
+    out.push(`<b>Descripción:</b> ${esc(corto(b.descripcion)) || '<i>(vacía)</i>'}`);
+    if (sec.extras && b.galeria.length) out.push(`<b>Galería:</b> ${b.galeria.length} imágenes`);
+    if (sec.extras && b.enlaces.length) out.push(`<b>Enlaces:</b> ${b.enlaces.length}`);
+    return out;
+  }
+  if (a.nombre !== b.nombre) out.push(`<b>Nombre:</b> <span class="antes">${esc(a.nombre)}</span> → <span class="despues">${esc(b.nombre)}</span>`);
+  if (a.serie !== b.serie) out.push(`<b>Serie:</b> <span class="antes">${esc(a.serie)}</span> → <span class="despues">${esc(b.serie)}</span>`);
+  if (a.imagen !== b.imagen) out.push(`<b>Imagen nueva:</b> <span class="despues">${esc(edicion.nombresArchivo[b.imagen.slice(6)] || b.imagen)}</span>`);
+  if ((a.descripcion || '') !== (b.descripcion || '')) out.push(`<b>Descripción:</b> <span class="despues">${esc(corto(b.descripcion)) || '<i>(vacía)</i>'}</span>`);
+  if (sec.extras) {
+    if (JSON.stringify(a.galeria) !== JSON.stringify(b.galeria)) out.push(`<b>Galería:</b> ${a.galeria.length} → ${b.galeria.length} imágenes (o pies de foto/orden cambiados)`);
+    if (JSON.stringify(a.enlaces) !== JSON.stringify(b.enlaces)) out.push(`<b>Enlaces:</b> ${a.enlaces.length} → ${b.enlaces.length}`);
+  }
+  return out;
+}
+
+function confirmar({ titulo, texto, lista = [], boton = 'Confirmar', peligro = false }) {
+  return new Promise((ok) => {
+    $('#c-titulo').textContent = titulo;
+    $('#c-texto').textContent = texto;
+    $('#c-lista').innerHTML = lista.map((x) => `<li>${x}</li>`).join('');
+    $('#c-lista').hidden = !lista.length;
+    $('#c-si').textContent = boton;
+    $('#c-si').className = 'btn ' + (peligro ? 'btn-peligro' : 'btn-rojo');
+    $('#confirmar').hidden = false;
+    $('#c-si').focus();
+    const fin = (v) => { $('#confirmar').hidden = true; $('#c-si').onclick = null; $('#c-no').onclick = null; ok(v); };
+    $('#c-si').onclick = () => fin(true);
+    $('#c-no').onclick = () => fin(false);
+  });
+}
+
+async function guardar() {
+  leerFormulario();
+  const it = edicion.item;
+  if (!it.nombre) { aviso('Escribe un nombre.', true); $('#f-nombre').focus(); return; }
+  if (!it.imagen) { aviso('Elige una imagen para la tarjeta.', true); return; }
+  const lista = cambios();
+  if (!lista.length) { aviso('No hay cambios que guardar.'); return; }
+  const nuevo = edicion.indice === null;
+  const si = await confirmar({
+    titulo: nuevo ? `¿Agregar "${it.nombre}"?` : `¿Guardar cambios en "${edicion.original}"?`,
+    texto: `Se escribirá en ${sec.archivo}${Object.keys(edicion.imagenes).length ? ' y se copiarán las imágenes nuevas al proyecto' : ''}.`,
+    lista,
+    boton: nuevo ? 'Sí, agregar' : 'Sí, guardar',
+  });
+  if (!si) return;
+  // solo se envían las imágenes que se usan
+  const usadas = {};
+  const usar = (v) => { if (typeof v === 'string' && v.startsWith('nuevo:')) usadas[v.slice(6)] = edicion.imagenes[v.slice(6)]; };
+  usar(it.imagen); (it.galeria || []).forEach((g) => usar(g.src));
+  $('#f-guardar').disabled = true;
+  try {
+    const j = await pedir(`/api/seccion/${sec.id}/guardar`, { indice: edicion.indice, original: edicion.original, item: it, imagenes: usadas });
+    items = j.items; sec.total = items.length;
+    cerrarEditor(true);
+    pintarNav(); pintarCabeza(); pintar();
+    aviso('✓ ' + j.mensaje);
+  } catch (e) { aviso(e.message, true); }
+  finally { $('#f-guardar').disabled = false; }
+}
+
+async function eliminar() {
+  const si = await confirmar({
+    titulo: `¿Eliminar "${edicion.original}"?`,
+    texto: `La tarjeta se quitará de ${sec.archivo}. La imagen se queda en su carpeta por si la necesitas.`,
+    boton: 'Sí, eliminar',
+    peligro: true,
+  });
+  if (!si) return;
+  try {
+    const j = await pedir(`/api/seccion/${sec.id}/eliminar`, { indice: edicion.indice, original: edicion.original });
+    items = j.items; sec.total = items.length;
+    cerrarEditor(true);
+    pintarNav(); pintarCabeza(); pintar();
+    aviso('✓ ' + j.mensaje);
+  } catch (e) { aviso(e.message, true); }
+}
+
+async function cerrarEditor(forzar) {
+  if (!forzar && edicion) {
+    leerFormulario();
+    if (cambios().length && !(await confirmar({ titulo: '¿Descartar los cambios?', texto: 'Hay cambios sin guardar en esta tarjeta.', boton: 'Descartar', peligro: true }))) return;
+  }
+  $('#velo').hidden = true;
+  edicion = null;
+}
+
+let tAviso;
+function aviso(texto, error) {
+  const a = $('#aviso');
+  a.textContent = texto;
+  a.className = 'aviso' + (error ? ' error' : '');
+  a.hidden = false;
+  clearTimeout(tAviso);
+  tAviso = setTimeout(() => { a.hidden = true; }, error ? 6000 : 3500);
+}
+
+// ---------------- eventos ----------------
+document.addEventListener('click', async (e) => {
+  const t = e.target.closest('button, [data-cerrar]');
+  if (!t) return;
+  if (t.dataset.sec) return abrirSeccion(t.dataset.sec);
+  if (t.dataset.serie !== undefined) { filtroSerie = t.dataset.serie || null; pintarFiltros(); return pintar(); }
+  if (t.dataset.i !== undefined) return abrirEditor(Number(t.dataset.i));
+  if (t.hasAttribute('data-cerrar')) return cerrarEditor(false);
+  if (!edicion) return;
+  if (t.dataset.serieOp) { edicion.item.serie = t.dataset.serieOp; return pintarSeries(); }
+  const g = edicion.item.galeria;
+  if (t.dataset.quitar !== undefined) { g.splice(+t.dataset.quitar, 1); return pintarGaleria(); }
+  if (t.dataset.subir !== undefined) { const i = +t.dataset.subir; [g[i - 1], g[i]] = [g[i], g[i - 1]]; return pintarGaleria(); }
+  if (t.dataset.bajar !== undefined) { const i = +t.dataset.bajar; [g[i + 1], g[i]] = [g[i], g[i + 1]]; return pintarGaleria(); }
+  if (t.dataset.equitar !== undefined) { edicion.item.enlaces.splice(+t.dataset.equitar, 1); return pintarEnlaces(); }
+});
+
+$('#agregar').addEventListener('click', () => abrirEditor(null));
+$('#buscar').addEventListener('input', pintar);
+$('#editor').addEventListener('submit', (e) => { e.preventDefault(); guardar(); });
+$('#f-eliminar').addEventListener('click', eliminar);
+$('#f-soltar').addEventListener('click', () => $('#f-archivo').click());
+$('#f-cambiar').addEventListener('click', () => $('#f-archivo').click());
+$('#f-archivo').addEventListener('change', (e) => { if (e.target.files[0]) ponerImagen(e.target.files[0]); e.target.value = ''; });
+const zona = $('#f-soltar');
+['dragenter', 'dragover'].forEach((ev) => zona.addEventListener(ev, (e) => { e.preventDefault(); zona.classList.add('encima'); }));
+['dragleave', 'drop'].forEach((ev) => zona.addEventListener(ev, (e) => { e.preventDefault(); zona.classList.remove('encima'); }));
+zona.addEventListener('drop', (e) => { const f = e.dataTransfer.files[0]; if (f) ponerImagen(f); });
+
+$('#f-mas-fotos').addEventListener('click', () => $('#f-archivos').click());
+$('#f-archivos').addEventListener('change', async (e) => {
+  for (const f of e.target.files) {
+    try { edicion.item.galeria.push({ src: await leerArchivo(f), pie: '' }); } catch (err) { aviso(err.message, true); }
+  }
+  e.target.value = '';
+  pintarGaleria();
+});
+$('#f-mas-enlace').addEventListener('click', () => { edicion.item.enlaces.push({ texto: '', url: '' }); pintarEnlaces(); });
+document.addEventListener('input', (e) => {
+  if (!edicion) return;
+  const d = e.target.dataset;
+  if (d.pie !== undefined) edicion.item.galeria[+d.pie].pie = e.target.value;
+  if (d.etexto !== undefined) edicion.item.enlaces[+d.etexto].texto = e.target.value;
+  if (d.eurl !== undefined) edicion.item.enlaces[+d.eurl].url = e.target.value;
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (!$('#confirmar').hidden) return $('#c-no').click();
+  if (!$('#velo').hidden) cerrarEditor(false);
+});
+$('#velo').addEventListener('mousedown', (e) => { if (e.target.id === 'velo') cerrarEditor(false); });
+window.addEventListener('beforeunload', (e) => { if (edicion) { leerFormulario(); if (cambios().length) { e.preventDefault(); e.returnValue = ''; } } });
+
+iniciar().catch((e) => aviso('No se pudo conectar con el administrador: ' + e.message, true));
+</script>
+</body>
+</html>

@@ -1,0 +1,455 @@
+/* Lugares y Objetos de la Wiki: tarjetas horizontales + ventana de información.
+   (El encabezado, buscador y filtros usan los estilos de Personajes.scss.) */
+
+.catalog-page .full-screen-element,
+.personajes-page-wrapper .wiki-hero {
+  position: relative;
+}
+
+.catalog-back {
+  position: absolute;
+  top: 0;
+  left: 5%;
+  z-index: 2;
+  padding: 6px 14px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #ddd;
+  text-decoration: none;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 18px;
+}
+
+.catalog-back:hover {
+  color: #fff;
+  border-color: #e50914;
+}
+
+/* ---------------- TARJETAS ---------------- */
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  width: 90%;
+  max-width: 1400px;
+  margin: 0 auto 60px;
+}
+
+.catalog-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  text-align: left;
+  color: #fff;
+  font-family: 'Open Sans', sans-serif;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  opacity: 0;
+  animation: slideIn 0.45s ease forwards;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.catalog-card:hover,
+.catalog-card:focus-visible {
+  transform: translateY(-4px);
+  border-color: #e50914;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+  outline: none;
+}
+
+.catalog-card__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #222;
+  overflow: hidden;
+}
+
+.catalog-card__img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.catalog-card:hover .catalog-card__img img {
+  transform: scale(1.05);
+}
+
+.catalog-card__title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding: 12px 14px 14px;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.3;
+}
+
+/* ---------------- VENTANA (computadora: centrada) ---------------- */
+.catalog-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.7);
+  animation: catalogFade 0.2s ease-out;
+}
+
+.catalog-modal {
+  position: relative;
+  width: min(640px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  animation: catalogPop 0.22s ease-out;
+}
+
+.catalog-modal__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: #222;
+}
+
+.catalog-modal__body {
+  padding: 18px 24px 24px;
+  color: #fff;
+  text-align: left;
+}
+
+.catalog-modal__serie {
+  display: block;
+  height: 40px;
+  max-width: 160px;
+  object-fit: contain;
+  object-position: left center;
+  margin-bottom: 10px;
+}
+
+.catalog-modal__body h3 {
+  margin: 0 0 10px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.catalog-modal__body p {
+  max-width: none;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #ddd;
+  text-align: left;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.catalog-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 26px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+@keyframes catalogFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes catalogPop {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes catalogSheetIn {
+  from { transform: translateY(40px); opacity: 0.6; }
+  to { transform: none; opacity: 1; }
+}
+
+/* ---------------- CELULAR Y TABLETA (≤1205px) ---------------- */
+@media screen and (max-width: 1205px) {
+  .catalog-back {
+    top: 10px;
+    left: 12px;
+    padding: 5px 12px;
+    font-size: 13px;
+  }
+
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    margin: 12px 0 16px;
+    padding: 0 12px;
+    box-sizing: border-box;
+  }
+
+  .catalog-card {
+    border-radius: 10px;
+    animation-duration: 0.3s;
+    animation-delay: 0s !important;
+  }
+
+  .catalog-card:hover {
+    transform: none;
+  }
+
+  .catalog-card__title {
+    padding: 8px 10px 10px;
+    font-size: 13px;
+  }
+
+  /* La ventana sube desde abajo, como en Personajes */
+  .catalog-modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .catalog-modal {
+    width: 100%;
+    max-width: 640px;
+    max-height: 85vh;
+    border-radius: 18px 18px 0 0;
+    border-bottom: none;
+    padding-bottom: env(safe-area-inset-bottom);
+    animation: catalogSheetIn 0.25s ease-out;
+  }
+
+  .catalog-modal__body {
+    padding: 14px 16px 20px;
+  }
+
+  .catalog-modal__body h3 {
+    font-size: 20px;
+  }
+
+  .catalog-modal__body p {
+    font-size: 15px;
+  }
+
+  .catalog-modal__serie {
+    height: 34px;
+  }
+}
+
+@media screen and (min-width: 600px) and (max-width: 1205px) {
+  .catalog-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    padding: 0 20px;
+  }
+}
+
+/* La imagen grande de la ventana se muestra completa (sin recortar) */
+.catalog-modal__img {
+  object-fit: contain;
+  background: #0d0d0d;
+}
+
+/* Descripciones con saltos de línea (ej. "Descripción" e "Historia") */
+.catalog-modal__body p {
+  white-space: pre-line;
+}
+
+/* Series: las tarjetas muestran el logo completo */
+.catalog-page--logos .catalog-card__img {
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 40%, #2a2a2a, #121212);
+}
+
+.catalog-page--logos .catalog-card__img img {
+  width: 82%;
+  height: 82%;
+  object-fit: contain;
+}
+
+.catalog-page--logos .catalog-modal__img {
+  padding: 24px;
+  box-sizing: border-box;
+  background: radial-gradient(circle at 50% 40%, #2a2a2a, #0d0d0d);
+}
+
+.catalog-page--logos .catalog-modal__serie {
+  display: none;
+}
+
+/* ---------------- MUSEO: galería, medios y enlaces ---------------- */
+.catalog-card__img {
+  position: relative;
+}
+
+.catalog-card__icono {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 56px;
+  color: #ff2f2f;
+  background: radial-gradient(circle at 50% 40%, #2a2a2a, #121212);
+}
+
+.catalog-card__cuenta {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 999px;
+}
+
+.catalog-modal__foto {
+  position: relative;
+  margin: 0;
+}
+
+.catalog-modal__foto a {
+  display: block;
+  cursor: zoom-in;
+}
+
+.catalog-modal__foto figcaption {
+  padding: 8px 24px 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #bbb;
+  text-align: left;
+}
+
+.catalog-modal__num {
+  margin-right: 8px;
+  font-weight: bold;
+  color: #ff2f2f;
+}
+
+.catalog-modal__nav {
+  position: absolute;
+  top: calc(50% - 40px);
+  width: 40px;
+  height: 56px;
+  padding: 0;
+  font-size: 34px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  border: none;
+  cursor: pointer;
+}
+
+.catalog-modal__nav--prev {
+  left: 0;
+  border-radius: 0 10px 10px 0;
+}
+
+.catalog-modal__nav--next {
+  right: 0;
+  border-radius: 10px 0 0 10px;
+}
+
+.catalog-modal__tiras {
+  display: flex;
+  gap: 6px;
+  padding: 10px 24px 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.catalog-modal__mini {
+  flex: 0 0 64px;
+  height: 48px;
+  padding: 0;
+  overflow: hidden;
+  background: #222;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.catalog-modal__mini.active {
+  border-color: #ff2f2f;
+  opacity: 1;
+}
+
+.catalog-modal__mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.catalog-modal__medio {
+  margin-top: 14px;
+  color: #ddd;
+}
+
+.catalog-modal__medio span {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.catalog-modal__medio video,
+.catalog-modal__medio audio {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.catalog-modal__descarga,
+.catalog-modal__enlaces a {
+  color: #ff5a5a;
+  font-weight: bold;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.catalog-modal__descarga:hover,
+.catalog-modal__enlaces a:hover {
+  text-decoration: underline;
+}
+
+.catalog-modal__enlaces {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.catalog-modal__enlaces li {
+  margin: 6px 0;
+}
+
+@media screen and (max-width: 1205px) {
+  .catalog-modal__foto figcaption,
+  .catalog-modal__tiras {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

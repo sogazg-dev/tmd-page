@@ -1,25 +1,23 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
-  "start_url": ".",
+  "short_name": "TMD",
+  "name": "TheMarioDimension",
+  "description": "Videos, noticias y la wiki de TheMarioDimension en un solo lugar.",
+  "lang": "es-MX",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#000000",
+  "icons": [
+    { "src": "app-icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "app-icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" },
+    { "src": "app-icon-maskable-512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Videos", "url": "/videos", "icons": [{ "src": "app-icon-192.png", "sizes": "192x192" }] },
+    { "name": "Wiki", "url": "/wiki", "icons": [{ "src": "app-icon-192.png", "sizes": "192x192" }] },
+    { "name": "Noticias", "url": "/news", "icons": [{ "src": "app-icon-192.png", "sizes": "192x192" }] }
+  ]
 }

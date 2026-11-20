@@ -1,7 +1,8 @@
 /* EpisodeList.css */
 
   .episode-list {
-    margin-bottom: -6rem;
+    position: relative;
+    margin-bottom: 0.5rem;
   }
   
   .episode-list-title {
@@ -12,11 +13,28 @@
     /* Customize title styling */
   }
   
+  /* Se desliza de lado (trackpad, Shift + rueda, arrastrando o con las
+     flechas) sin mostrar la barra de desplazamiento */
   .episode-thumbnails {
     display: flex;
-    overflow-x: hidden; /* Hide the horizontal scrollbar */
-    /* Other styles remain the same */
+    overflow-x: auto;
     overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .episode-thumbnails::-webkit-scrollbar {
+    display: none;
+  }
+
+  .episode-thumbnails.is-arrastrando {
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  .episode-thumbnails.is-arrastrando a {
+    pointer-events: none;
   }
   
   .episode-thumbnail {
@@ -47,36 +65,45 @@
     /* Customize episode title styling */
   }
 
+  /* Flechas: las dos a la misma altura, a la mitad de las miniaturas
+     (1rem de margen arriba + 200px de imagen) */
   .scroll-button {
-    position: relative;
-    top: -200px;
-    background: none;
-    height: 20%;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: transform 0.2s ease;
+    position: absolute;
+    top: calc(1rem + 100px);
     z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: transform 0.2s ease, opacity 0.2s ease;
   }
-  
-  .left {
+
+  .scroll-button.left {
     left: 0;
-    margin-right: 3%;
   }
-  
-  .right {
+
+  .scroll-button.right {
     right: 0;
-    margin-left: 91%;
-    margin-top: -7%;
+  }
+
+  .scroll-button.is-oculto {
+    opacity: 0;
+    pointer-events: none;
   }
 
   .scroll-button img {
-    width: 50px; /* Set the desired width */
-    height: 70px; /* Set the desired height */
+    display: block;
+    width: 50px;
+    height: 70px;
+    filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.9));
   }
 
   .scroll-button:hover {
-    transform: scale(1.1);
+    transform: translateY(-50%) scale(1.1);
   }
 
   @media screen and (max-width:430px) {
@@ -117,5 +144,113 @@
 
     .scroll-button {
       display: none;
+    }
+  }
+
+  /* Fila sin videos (playlist vacía, cargando o con error) */
+  .episode-list--empty {
+    margin-bottom: 0;
+  }
+
+  .episode-list-status {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin: 1rem 20px 2rem;
+  }
+
+  /* Los títulos de YouTube pueden ser largos: máximo 2 líneas */
+  .episode-title {
+    max-width: 400px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ===================================================================
+     Celular y tableta (≤1205px): filas compactas que se deslizan de lado
+     =================================================================== */
+  @media screen and (max-width: 1205px) {
+    .episode-list-title {
+      margin: 20px 16px 8px;
+      font-size: 17px;
+      text-align: left;
+    }
+
+    .episode-list {
+      margin-bottom: 0;
+    }
+
+    .episode-list-status {
+      margin: 4px 16px 8px;
+      font-size: 13px;
+    }
+
+    .episode-thumbnails {
+      display: flex;
+      gap: 10px;
+      padding: 0 16px 4px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x proximity;
+      scroll-padding: 0 16px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .episode-thumbnails::-webkit-scrollbar {
+      display: none;
+    }
+
+    .episode-thumbnail {
+      flex: 0 0 auto;
+      width: 156px;
+      margin: 0;
+      scroll-snap-align: start;
+    }
+
+    .episode-thumbnail:hover {
+      transform: none;
+    }
+
+    .episode-thumbnail img {
+      display: block;
+      width: 156px;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .episode-thumbnail .episode-title {
+      max-width: 156px;
+      margin: 6px 0 0;
+      font-size: 12px;
+      line-height: 1.3;
+      color: #ddd;
+    }
+
+    .scroll-button {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width: 600px) and (max-width: 1205px) {
+    .episode-thumbnail,
+    .episode-thumbnail img,
+    .episode-thumbnail .episode-title {
+      width: 210px;
+      max-width: 210px;
+    }
+
+    .episode-list-title {
+      margin: 24px 24px 10px;
+      font-size: 20px;
+    }
+
+    .episode-thumbnails {
+      padding: 0 24px 4px;
+      scroll-padding: 0 24px;
+      gap: 14px;
     }
   }

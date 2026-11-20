@@ -229,3 +229,101 @@
   margin-top: 2.3%;
 }
 }
+
+/* ---- Pantallas grandes (≥1301px) ----
+   Antes la cuadrícula medía 1320px de alto (filas de 650px) y se centraba con
+   position:absolute + transform dentro de una sección de 85vh, así que en la
+   mayoría de las pantallas su parte superior quedaba detrás de la barra de
+   navegación (Chrome lo recortaba; Safari lo encimaba con la barra).
+   Ahora la cuadrícula va en el flujo normal debajo de la barra y el alto de
+   las filas se adapta al alto de la pantalla. */
+@media screen and (min-width: 1301px) {
+  .home-page {
+    height: auto;
+    min-height: 85vh;
+    padding: 24px 0 32px;
+    box-sizing: border-box;
+  }
+
+  .menu-grid {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    margin: 0 auto;
+    grid-template-rows: clamp(380px, calc(85vh - 340px), 650px) auto;
+  }
+
+  .bottom.left,
+  .bottom.right {
+    height: clamp(150px, 22vh, 260px);
+  }
+}
+
+/* ---- 1206px a 1300px ----
+   Igual que en pantallas grandes: la cuadrícula va en el flujo normal para que
+   los botones de abajo no se recorten y la portada (HomeFeed) quede debajo. */
+@media screen and (min-width: 1206px) and (max-width: 1300px) {
+  .home-page {
+    height: auto;
+    min-height: 0;
+    padding: 24px 0 8px;
+    box-sizing: border-box;
+  }
+
+  .menu-grid {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    margin: 0 auto;
+    grid-template-rows: 350px auto;
+  }
+
+  .bottom.left,
+  .bottom.right {
+    height: 210px;
+  }
+}
+
+/* ---- Botones de inicio más chicos en computadora ----
+   Misma forma y proporciones (todo se reduce ~20%); las imágenes de fondo
+   no se tocan, solo se muestran en un recuadro más pequeño. */
+@media screen and (min-width: 1301px) {
+  .home-page {
+    min-height: 0;
+  }
+
+  .menu-grid {
+    width: 72%;
+    gap: 16px;
+    grid-template-rows: clamp(304px, calc((85vh - 340px) * 0.8), 520px) auto;
+  }
+
+  .menu-item {
+    font-size: 240%;
+    letter-spacing: 6px;
+  }
+
+  .bottom.left,
+  .bottom.right {
+    height: clamp(120px, 17.6vh, 208px);
+  }
+}
+
+@media screen and (min-width: 1206px) and (max-width: 1300px) {
+  .menu-grid {
+    width: 80%;
+    grid-template-rows: 280px auto;
+  }
+
+  .menu-item {
+    font-size: 125%;
+    letter-spacing: 6px;
+  }
+
+  .bottom.left,
+  .bottom.right {
+    height: 168px;
+  }
+}

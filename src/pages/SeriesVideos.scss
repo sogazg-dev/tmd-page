@@ -1,0 +1,149 @@
+.series-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 40px 40px;
+  box-sizing: border-box;
+  color: #fff;
+}
+
+.series-page__header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.series-page__back {
+  flex-basis: 100%;
+  color: #aaa;
+  font-weight: bold;
+  text-decoration: none;
+
+  &:hover { color: #fff; }
+}
+
+.series-page__logo {
+  height: 80px;
+  max-width: 260px;
+  object-fit: contain;
+}
+
+.series-page__titles {
+  display: flex;
+  flex-direction: column;
+
+  h1 {
+    margin: 0;
+    font-size: 32px;
+    color: #fff;
+  }
+
+  span {
+    color: #aaa;
+    font-size: 14px;
+  }
+}
+
+.series-page__status {
+  color: #aaa;
+  max-width: none;
+}
+
+.series-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px 18px;
+}
+
+.series-card {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+
+  &:hover { transform: scale(1.03); }
+}
+
+.series-card__thumb {
+  position: relative;
+
+  img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #1a1a1a;
+  }
+}
+
+.series-card__num {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  min-width: 22px;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 6px;
+}
+
+.series-card__title {
+  max-width: none;
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #ddd;
+  text-align: left;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Celular y tableta */
+@media screen and (max-width: 1205px) {
+  .series-page {
+    padding: 12px 16px 24px;
+  }
+
+  .series-page__header {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .series-page__logo {
+    height: 48px;
+    max-width: 40%;
+  }
+
+  .series-page__titles h1 {
+    font-size: 20px;
+    margin: 0;
+  }
+
+  .series-page__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 10px;
+  }
+
+  .series-card:hover { transform: none; }
+
+  .series-card__title {
+    font-size: 12px;
+    margin-top: 6px;
+  }
+}
+
+@media screen and (min-width: 600px) and (max-width: 1205px) {
+  .series-page { padding: 16px 24px 32px; }
+  .series-page__grid { grid-template-columns: repeat(3, 1fr); gap: 20px 14px; }
+}
+
+@media screen and (min-width: 900px) and (max-width: 1205px) {
+  .series-page__grid { grid-template-columns: repeat(4, 1fr); }
+}

@@ -1,0 +1,186 @@
+/* Encabezado de cada fila: título + "Ver todo" / "Borrar" */
+.episode-list-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  /* deja espacio para la barra de accesos rápidos al saltar a una fila */
+  scroll-margin-top: 64px;
+}
+
+.episode-list-action {
+  margin-left: auto;
+  margin-right: 20px;
+  padding: 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: #aaa;
+  background: none;
+  border: none;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+/* Accesos rápidos: solo en celular y tableta */
+.videos-quick {
+  display: none;
+}
+
+@media screen and (max-width: 1205px) {
+  .videos-quick {
+    display: flex;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 800;
+    padding: 8px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    background: rgba(0, 0, 0, 0.92);
+    border-bottom: 1px solid #1f1f1f;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .videos-quick__chip {
+    flex: 0 0 auto;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #ddd;
+    background: #222;
+    border: 1px solid #383838;
+    border-radius: 18px;
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    &.is-active {
+      color: #fff;
+      background: #e50914;
+      border-color: #e50914;
+    }
+  }
+
+  .episode-list-header {
+    align-items: baseline;
+  }
+
+  .episode-list-action {
+    margin-right: 16px;
+    font-size: 13px;
+  }
+}
+
+@media screen and (min-width: 600px) and (max-width: 1205px) {
+  .videos-quick {
+    padding: 10px 24px;
+  }
+
+  .episode-list-action {
+    margin-right: 24px;
+  }
+}
+
+/* Deja libre la esquina del botón flotante de Contacto */
+@media screen and (max-width: 1205px) {
+  .videos-quick {
+    padding-right: 60px;
+  }
+}
+
+/* Pestañas debajo de la portada: TMD/TMD2 y Comunidad */
+.videos-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 28px 20px 4px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.videos-tabs__tab {
+  position: relative;
+  padding: 12px 18px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #9a9a9a;
+  background: none;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: -1px;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    background: transparent;
+  }
+
+  &:hover { color: #fff; }
+
+  &.is-active {
+    color: #fff;
+
+    &::after { background: #e50914; }
+  }
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+/* Título de un grupo de filas (ej. "Otras Continuaciones") */
+.videos-group-title {
+  max-width: none;
+  margin: 3rem 20px 0;
+  font-size: 1.7rem;
+  color: #fff;
+  text-align: left;
+  scroll-margin-top: 64px;
+}
+
+.episode-list-title--sub {
+  font-size: 1.2rem;
+  color: #ddd;
+}
+
+@media screen and (max-width: 1205px) {
+  .videos-tabs {
+    margin: 16px 16px 0;
+    gap: 4px;
+  }
+
+  .videos-tabs__tab {
+    flex: 1;
+    padding: 11px 8px;
+    font-size: 15px;
+  }
+
+  .videos-group-title {
+    margin: 22px 16px 0;
+    font-size: 19px;
+  }
+
+  .episode-list-title--sub {
+    font-size: 15px;
+  }
+}
+
+@media screen and (min-width: 600px) and (max-width: 1205px) {
+  .videos-tabs { margin: 20px 24px 0; }
+  .videos-group-title { margin: 26px 24px 0; font-size: 21px; }
+}
